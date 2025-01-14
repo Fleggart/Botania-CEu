@@ -105,6 +105,7 @@ public final class ConfigHandler {
 	public static String[] runicAltarRetainedItems = IntStream.rangeClosed(0, 15).mapToObj(i -> "botania:rune@" + i).toArray(String[]::new);
 	public static boolean wantPetalApothecaryCatalyst = false;
 	public static String petalApothecaryCatalyst = "";
+	public static int elfPortalSize = 2;
 
 	public static void loadConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -296,6 +297,9 @@ public final class ConfigHandler {
 
 		desc = "The item that should be used as the catalyst for Petal Apothecary. This item must not be in any Petal Apothecary recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). Has no effect if wantPetalApothecaryCatalyst is false (the default).";
 		petalApothecaryCatalyst = loadPropString("ceu.petalApothecaryCatalyst", desc, petalApothecaryCatalyst);
+
+		desc = "The size of the Elf portal. 1 is a 1x1 square on the internals, 2 is a 3x3 square, etc. Defaults to 2. Warning: large numbers cause lag.";
+		elfPortalSize = loadPropInt("ceu.elfPortalSize", desc, elfPortalSize);
 
 		if(config.hasChanged())
 			config.save();

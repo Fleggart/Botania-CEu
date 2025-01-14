@@ -50,21 +50,44 @@ import java.util.function.Function;
 
 public class TileAlfPortal extends TileMod implements ITickable {
 
-	private static final BlockPos[] LIVINGWOOD_POSITIONS = {
-			new BlockPos(-1, 0, 0), new BlockPos(1, 0, 0), new BlockPos(-2, 1, 0),
-			new BlockPos(2, 1, 0), new BlockPos(-2, 3, 0), new BlockPos(2, 3, 0),
-			new BlockPos(-1, 4, 0), new BlockPos(1, 4, 0)
-	};
+	private static BlockPos[] getLivingwoodPositions() {
+		List<BlockPos> positions = new ArrayList<>();
+		for (int i = 1; i < ConfigHandler.elfPortalSize; i++) {
+			// Bottom row
+			positions.add(new BlockPos(-i, 0, 0));
+			positions.add(new BlockPos(i, 0, 0));
+			// Left-bottom and right-bottom
+			positions.add(new BlockPos(ConfigHandler.elfPortalSize, i, 0));
+			positions.add(new BlockPos(-ConfigHandler.elfPortalSize, i, 0));
+			// Left-top and right-top
+			positions.add(new BlockPos(ConfigHandler.elfPortalSize, i + ConfigHandler.elfPortalSize, 0));
+			positions.add(new BlockPos(-ConfigHandler.elfPortalSize, i + ConfigHandler.elfPortalSize, 0));
+			// Top row
+			positions.add(new BlockPos(-i, 2 * ConfigHandler.elfPortalSize, 0));
+			positions.add(new BlockPos(i, 2 * ConfigHandler.elfPortalSize, 0));
+		}
+		return positions.toArray(new BlockPos[0]);
+	}
+
+	private static final BlockPos[] LIVINGWOOD_POSITIONS = getLivingwoodPositions();
 
 	private static final BlockPos[] GLIMMERING_LIVINGWOOD_POSITIONS = {
-			new BlockPos(-2, 2, 0), new BlockPos(2, 2, 0), new BlockPos(0, 4, 0)
+			new BlockPos(-ConfigHandler.elfPortalSize, ConfigHandler.elfPortalSize, 0),
+			new BlockPos(ConfigHandler.elfPortalSize, ConfigHandler.elfPortalSize, 0),
+			new BlockPos(0, ConfigHandler.elfPortalSize * 2, 0)
 	};
 
-	private static final BlockPos[] AIR_POSITIONS = {
-			new BlockPos(-1, 1, 0), new BlockPos(0, 1, 0), new BlockPos(1, 1, 0),
-			new BlockPos(-1, 2, 0), new BlockPos(0, 2, 0), new BlockPos(1, 2, 0),
-			new BlockPos(-1, 3, 0), new BlockPos(0, 3, 0), new BlockPos(1, 3, 0)
-	};
+	private static BlockPos[] getAirPositions() {
+		List<BlockPos> positions = new ArrayList<>();
+		for (int i = 1 - ConfigHandler.elfPortalSize; i < ConfigHandler.elfPortalSize; i++) {
+			for (int j = 1; j < 2 * ConfigHandler.elfPortalSize; j++) {
+				positions.add(new BlockPos(i, j, 0));
+			}
+		}
+		return positions.toArray(new BlockPos[0]);
+	}
+
+	private static final BlockPos[] AIR_POSITIONS = getAirPositions();
 
 	private static final String TAG_TICKS_OPEN = "ticksOpen";
 	private static final String TAG_TICKS_SINCE_LAST_ITEM = "ticksSinceLastItem";
@@ -223,9 +246,13 @@ public class TileAlfPortal extends TileMod implements ITickable {
 	}
 
 	private AxisAlignedBB getPortalAABB() {
-		AxisAlignedBB aabb = new AxisAlignedBB(pos.add(-1, 1, 0), pos.add(2, 4, 1));
+		int minX = 1 - ConfigHandler.elfPortalSize;
+		// these 2 are exclusive
+		int maxX = ConfigHandler.elfPortalSize;
+		int maxY = ConfigHandler.elfPortalSize * 2;
+		AxisAlignedBB aabb = new AxisAlignedBB(pos.add(minX, 1, 0), pos.add(maxX, maxY, 1));
 		if(world.getBlockState(getPos()).getValue(BotaniaStateProps.ALFPORTAL_STATE) == AlfPortalState.ON_X)
-			aabb = new AxisAlignedBB(pos.add(0, 1, -1), pos.add(1, 4, 2));
+			aabb = new AxisAlignedBB(pos.add(0, 1, minX), pos.add(1, maxY, maxX));
 
 		return aabb;
 	}

@@ -24,6 +24,7 @@ import vazkii.botania.client.core.handler.MiscellaneousIcons;
 import vazkii.botania.client.core.proxy.ClientProxy;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.tile.TileAlfPortal;
+import vazkii.botania.common.core.handler.ConfigHandler;
 
 import javax.annotation.Nonnull;
 
@@ -42,7 +43,7 @@ public class RenderTileAlfPortal extends TileEntitySpecialRenderer<TileAlfPortal
 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(d0, d1, d2);
-		GlStateManager.translate(-1F, 1F, 0.25F);
+		GlStateManager.translate(1F - ConfigHandler.elfPortalSize, 1F, 0.25F);
 
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -55,17 +56,18 @@ public class RenderTileAlfPortal extends TileEntitySpecialRenderer<TileAlfPortal
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
 		if(state == AlfPortalState.ON_X) {
-			GlStateManager.translate(1.25F, 0F, 1.75F);
+			GlStateManager.translate(ConfigHandler.elfPortalSize - 0.75F, 0F, ConfigHandler.elfPortalSize - 0.25F);
 			GlStateManager.rotate(90F, 0F, 1F, 0F);
 		}
 
+		int portalDim = ConfigHandler.elfPortalSize * 2 - 1;
 		GlStateManager.disableCull();
 		GlStateManager.disableLighting();
-		renderIcon(0, 0, MiscellaneousIcons.INSTANCE.alfPortalTex, 3, 3, 240);
+		renderIcon(0, 0, MiscellaneousIcons.INSTANCE.alfPortalTex, portalDim, portalDim, 240);
 
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.translate(0F, 0F, 0.5F);
-		renderIcon(0, 0, MiscellaneousIcons.INSTANCE.alfPortalTex, 3, 3, 240);
+		renderIcon(0, 0, MiscellaneousIcons.INSTANCE.alfPortalTex, portalDim, portalDim, 240);
 
 		GlStateManager.enableCull();
 		GlStateManager.enableAlpha();
