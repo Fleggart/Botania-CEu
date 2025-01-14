@@ -285,7 +285,7 @@ public final class ConfigHandler {
 		desc = "The quantity of Botania mushrooms to generate underground, in the world, defaults to 40, the lower the number the less patches generate.";
 		mushroomQuantity = loadPropInt("worldgen.mushroom.quantity", desc, mushroomQuantity);
 
-		desc = "The item that should be used as the catalyst for Runic Altar. This item must not be in any Runic Altar recipes. Syntax is mod_id:mod_name or mod_id:mod_name@meta (for meta > 0). Default is botania:livingrock.";
+		desc = "The item that should be used as the catalyst for Runic Altar. This item must not be in any Runic Altar recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). Default is botania:livingrock.";
 		runicAltarCatalyst = loadPropString("ceu.runicAltarCatalyst", desc, runicAltarCatalyst);
 
 		desc = "The items that should be retained after the Runic Altar finishes a craft. By default, includes all of Botania's runes.";
@@ -294,7 +294,7 @@ public final class ConfigHandler {
 		desc = "Should a custom Petal Apothecary catalyst be used? Default catalyst is any seed item. With a custom catalyst, only one item can be used.";
 		wantPetalApothecaryCatalyst = loadPropBool("ceu.wantPetalApothecaryCatalyst", desc, wantPetalApothecaryCatalyst);
 
-		desc = "The item that should be used as the catalyst for Petal Apothecary. This item must not be in any Petal Apothecary recipes. Syntax is mod_id:mod_name or mod_id:mod_name@meta (for meta > 0). Has no effect if wantPetalApothecaryCatalyst is false (the default).";
+		desc = "The item that should be used as the catalyst for Petal Apothecary. This item must not be in any Petal Apothecary recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). Has no effect if wantPetalApothecaryCatalyst is false (the default).";
 		petalApothecaryCatalyst = loadPropString("ceu.petalApothecaryCatalyst", desc, petalApothecaryCatalyst);
 
 		if(config.hasChanged())
