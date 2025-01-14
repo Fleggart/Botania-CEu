@@ -11,6 +11,7 @@
 package vazkii.botania.common.core.handler;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import vazkii.botania.common.Botania;
+import vazkii.botania.common.core.helper.InventoryHelper;
 import vazkii.botania.common.lib.LibMisc;
 
 import java.io.File;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public final class ConfigHandler {
 
@@ -97,6 +100,11 @@ public final class ConfigHandler {
 	public static int flowerPatchChance = 16;
 	public static double flowerTallChance = 0.05;
 	public static int mushroomQuantity = 40;
+
+	public static String runicAltarCatalyst = "botania:livingrock";
+	public static String[] runicAltarRetainedItems = IntStream.rangeClosed(0, 15).mapToObj(i -> "botania:rune@" + i).toArray(String[]::new);
+	public static boolean wantPetalApothecaryCatalyst = false;
+	public static String petalApothecaryCatalyst = "";
 
 	public static void loadConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -277,13 +285,39 @@ public final class ConfigHandler {
 		desc = "The quantity of Botania mushrooms to generate underground, in the world, defaults to 40, the lower the number the less patches generate.";
 		mushroomQuantity = loadPropInt("worldgen.mushroom.quantity", desc, mushroomQuantity);
 
+		desc = "The item that should be used as the catalyst for Runic Altar. This item must not be in any Runic Altar recipes. Syntax is mod_id:mod_name or mod_id:mod_name@meta (for meta > 0). Default is botania:livingrock.";
+		runicAltarCatalyst = loadPropString("ceu.runicAltarCatalyst", desc, runicAltarCatalyst);
+
+		desc = "The items that should be retained after the Runic Altar finishes a craft. By default, includes all of Botania's runes.";
+		runicAltarRetainedItems = loadPropStringList("ceu.runicAltarRetainedItems", desc, runicAltarRetainedItems);
+
+		desc = "Should a custom Petal Apothecary catalyst be used? Default catalyst is any seed item. With a custom catalyst, only one item can be used.";
+		wantPetalApothecaryCatalyst = loadPropBool("ceu.wantPetalApothecaryCatalyst", desc, wantPetalApothecaryCatalyst);
+
+		desc = "The item that should be used as the catalyst for Petal Apothecary. This item must not be in any Petal Apothecary recipes. Syntax is mod_id:mod_name or mod_id:mod_name@meta (for meta > 0). Has no effect if wantPetalApothecaryCatalyst is false (the default).";
+		petalApothecaryCatalyst = loadPropString("ceu.petalApothecaryCatalyst", desc, petalApothecaryCatalyst);
+
 		if(config.hasChanged())
 			config.save();
+	}
+
+	private static void checkItemID(String description, String s) {
+		ItemStack ds = InventoryHelper.destringifyStack(s);
+		if (ds == null) {
+			throw new IllegalArgumentException("Item " + s + " used as " + description + " does not exist");
+		}
 	}
 
 	public static void loadPostInit() {
 		if(enableShedding)
 			SheddingHandler.loadFromConfig(config);
+
+		checkItemID("Runic Altar Catalyst", runicAltarCatalyst);
+		if (wantPetalApothecaryCatalyst)
+			checkItemID("Petal Apothecary Catalyst", petalApothecaryCatalyst);
+		for (String s : runicAltarRetainedItems) {
+			checkItemID("Runic Altar Retained Item", s);
+		}
 
 		if(config.hasChanged())
 			config.save();
@@ -317,6 +351,22 @@ public final class ConfigHandler {
 			adaptor.adaptPropertyBool(prop, prop.getBoolean(default_));
 
 		return prop.getBoolean(default_);
+	}
+
+	public static String loadPropString(String propName, String desc, String default_) {
+		Property prop = config.get(Configuration.CATEGORY_GENERAL, propName, default_);
+		prop.setComment(desc);
+
+		// we don't need an adaptor because it's only needed to parse numbers as booleans/doubles
+		return prop.getString();
+	}
+
+	public static String[] loadPropStringList(String propName, String desc, String[] default_) {
+		Property prop = config.get(Configuration.CATEGORY_GENERAL, propName, default_);
+		prop.setComment(desc);
+
+		// we don't need an adaptor because it's only needed to parse numbers as booleans/doubles
+		return prop.getStringList();
 	}
 
 	public static class ConfigAdaptor {

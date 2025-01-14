@@ -38,7 +38,6 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import scala.reflect.internal.Trees.If;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.internal.VanillaPacketDispatcher;
 import vazkii.botania.api.item.IPetalApothecary;
@@ -50,15 +49,15 @@ import vazkii.botania.client.core.handler.HUDHandler;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.Botania;
 import vazkii.botania.common.block.ModBlocks;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.handler.ModSounds;
-import vazkii.botania.common.item.equipment.bauble.ItemBalanceCloak;
-import vazkii.botania.common.network.PacketBotaniaEffect;
-import vazkii.botania.common.network.PacketHandler;
+import vazkii.botania.common.core.helper.InventoryHelper;
 
 import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class TileAltar extends TileSimpleInventory implements IPetalApothecary, ITickable {
@@ -80,6 +79,18 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 
 	List<ItemStack> lastRecipe = null;
 	int recipeKeepTicks = 0;
+
+	private boolean isCatalystItem(ItemStack stack) {
+		if (!ConfigHandler.wantPetalApothecaryCatalyst)
+			return SEED_PATTERN.matcher(stack.getTranslationKey()).find();
+		return InventoryHelper.stringifyStack(stack).equals(ConfigHandler.petalApothecaryCatalyst);
+	}
+
+	private ItemStack getCatalystItemStack() {
+		if (!ConfigHandler.wantPetalApothecaryCatalyst)
+			return new ItemStack(Items.WHEAT_SEEDS);
+		return Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.petalApothecaryCatalyst));
+	}
 
 	public boolean collideEntityItem(EntityItem item) {
 		ItemStack stack = item.getItem();
@@ -128,7 +139,7 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 			return true;
 		}
 		
-		if(SEED_PATTERN.matcher(stack.getTranslationKey()).find()) {
+		if(isCatalystItem(stack)) {
 			for(RecipePetals recipe : BotaniaAPI.petalRecipes) {
 				if(recipe.matches(itemHandler)) {
 					saveLastRecipe();
@@ -381,7 +392,7 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 
 					net.minecraft.client.renderer.RenderHelper.enableGUIStandardItemLighting();
 					mc.getRenderItem().renderItemIntoGUI(stack, xc + radius + 32, yc - 8);
-					mc.getRenderItem().renderItemIntoGUI(new ItemStack(Items.WHEAT_SEEDS), xc + radius + 16, yc + 6);
+					mc.getRenderItem().renderItemIntoGUI(getCatalystItemStack(), xc + radius + 16, yc + 6);
 					net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
 					mc.fontRenderer.drawStringWithShadow("+", xc + radius + 14, yc + 10, 0xFFFFFF);
 				}

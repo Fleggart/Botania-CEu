@@ -32,7 +32,9 @@ import vazkii.botania.client.core.handler.HUDHandler;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.Botania;
 import vazkii.botania.common.block.ModBlocks;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.handler.ModSounds;
+import vazkii.botania.common.core.helper.InventoryHelper;
 import vazkii.botania.common.core.helper.Vector3;
 import vazkii.botania.common.item.ModItems;
 import vazkii.botania.common.network.PacketBotaniaEffect;
@@ -42,6 +44,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver, ITickable {
 
@@ -61,17 +64,49 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 	List<ItemStack> lastRecipe = null;
 	int recipeKeepTicks = 0;
 
+	private boolean addItemFromStack(@Nullable EntityPlayer player, ItemStack stack, int slot) {
+		if(itemHandler.getStackInSlot(slot).isEmpty()) {
+			ItemStack stackToAdd = stack.copy();
+			stackToAdd.setCount(1);
+			itemHandler.setStackInSlot(slot, stackToAdd);
+
+			if(player == null || !player.capabilities.isCreativeMode) {
+				stack.shrink(1);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean shouldRetainAfterCraft(ItemStack stack) {
+		String item = InventoryHelper.stringifyStack(stack);
+		for (String s : ConfigHandler.runicAltarRetainedItems) {
+			if (s.equals(item)) return true;
+		}
+		return false;
+	}
+
 	public boolean addItem(@Nullable EntityPlayer player, ItemStack stack, @Nullable EnumHand hand) {
 		if(cooldown > 0 || stack.getItem() == ModItems.twigWand || stack.getItem() == ModItems.lexicon)
 			return false;
 
-		if(stack.getItem() == Item.getItemFromBlock(ModBlocks.livingrock) && stack.getItemDamage() == 0) {
+		if(InventoryHelper.stringifyStack(stack).equals(ConfigHandler.runicAltarCatalyst)) {
+			int catalystSlot = getSizeInventory() - 1;
+			if (addItemFromStack(player, stack, catalystSlot)) {
+				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
+				System.out.println("add item to slot");
+				return true;
+			}
+			// place livingrock in world if the slot is used up
 			if(!world.isRemote) {
 				ItemStack toSpawn = player != null && player.capabilities.isCreativeMode ? stack.copy().splitStack(1) : stack.splitStack(1);
 				EntityItem item = new EntityItem(world, getPos().getX() + 0.5, getPos().getY() + 1, getPos().getZ() + 0.5, toSpawn);
 				item.setPickupDelay(40);
 				item.motionX = item.motionY = item.motionZ = 0;
 				world.spawnEntity(item);
+				System.out.println("add item to world");
 			}
 
 			return true;
@@ -82,17 +117,10 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 
 		boolean did = false;
 
-		for(int i = 0; i < getSizeInventory(); i++)
-			if(itemHandler.getStackInSlot(i).isEmpty()) {
+		// last slot is reserved for livingrock
+		for(int i = 0; i < getSizeInventory() - 1; i++)
+			if (addItemFromStack(player, stack, i)) {
 				did = true;
-				ItemStack stackToAdd = stack.copy();
-				stackToAdd.setCount(1);
-				itemHandler.setStackInSlot(i, stackToAdd);
-
-				if(player == null || !player.capabilities.isCreativeMode) {
-					stack.shrink(1);
-				}
-
 				break;
 			}
 
@@ -130,11 +158,13 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 		recieveMana(0);
 
 		if(!world.isRemote) {
-			if(manaToGet == 0) {
-				List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)));
-				for(EntityItem item : items)
-					if(!item.isDead && !item.getItem().isEmpty() && item.getItem().getItem() != Item.getItemFromBlock(ModBlocks.livingrock)) {
-						ItemStack stack = item.getItem();
+			List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)));
+			for(EntityItem item : items)
+				if(!item.isDead && !item.getItem().isEmpty()) {
+					ItemStack stack = item.getItem();
+					boolean acceptsCatalyst = itemHandler.getStackInSlot(getSizeInventory() - 1).isEmpty();
+					boolean isCatalyst = InventoryHelper.stringifyStack(stack).equals(ConfigHandler.runicAltarCatalyst);
+					if((acceptsCatalyst && isCatalyst) || (!isCatalyst && cooldown == 0)) {
 						addItem(null, stack, null);
 					}
 			}
@@ -196,7 +226,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 
 	public void saveLastRecipe() {
 		lastRecipe = new ArrayList<>();
-		for(int i = 0; i < getSizeInventory(); i++) {
+		for(int i = 0; i < getSizeInventory() - 1; i++) {
 			ItemStack stack = itemHandler.getStackInSlot(i);
 			if(stack.isEmpty())
 				break;
@@ -236,15 +266,8 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 		}
 
 		if(manaToGet > 0 && mana >= manaToGet) {
-			List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)));
-			EntityItem livingrock = null;
-			for(EntityItem item : items)
-				if(!item.isDead && !item.getItem().isEmpty() && item.getItem().getItem() == Item.getItemFromBlock(ModBlocks.livingrock)) {
-					livingrock = item;
-					break;
-				}
-
-			if(livingrock != null) {
+			ItemStack livingrock = itemHandler.getStackInSlot(getSizeInventory() - 1);
+			if(!livingrock.isEmpty()) {
 				int mana = recipe.getManaUsage();
 				recieveMana(-mana);
 				ItemStack output = recipe.getOutput().copy();
@@ -258,7 +281,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 				for(int i = 0; i < getSizeInventory(); i++) {
 					ItemStack stack = itemHandler.getStackInSlot(i);
 					if(!stack.isEmpty()) {
-						if(stack.getItem() == ModItems.rune && (player == null || !player.capabilities.isCreativeMode)) {
+						if(shouldRetainAfterCraft(stack)) {
 							EntityItem outputRune = new EntityItem(world, getPos().getX() + 0.5, getPos().getY() + 1.5, getPos().getZ() + 0.5, stack.copy());
 							world.spawnEntity(outputRune);
 						}
@@ -267,13 +290,13 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 					}
 				}
 
-				livingrock.getItem().shrink(1);
+				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
 			}
 		}
 	}
 
 	public boolean isEmpty() {
-		for(int i = 0; i < getSizeInventory(); i++)
+		for(int i = 0; i < getSizeInventory() - 1; i++)
 			if(!itemHandler.getStackInSlot(i).isEmpty())
 				return false;
 
@@ -298,7 +321,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 
 	@Override
 	public int getSizeInventory() {
-		return 16;
+		return 17;
 	}
 
 	@Nonnull
@@ -341,10 +364,20 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 		int xc = res.getScaledWidth() / 2;
 		int yc = res.getScaledHeight() / 2;
 
+		ItemStack livingrock = itemHandler.getStackInSlot(getSizeInventory() - 1);
+		if (!livingrock.isEmpty()) {
+			// Don't ask why 7 has to be here and not 8. I don't know.
+			GlStateManager.translate(xc - 7, yc - 7, 0);
+			net.minecraft.client.renderer.RenderHelper.enableGUIStandardItemLighting();
+			mc.getRenderItem().renderItemIntoGUI(itemHandler.getStackInSlot(getSizeInventory() - 1), 0, 0);
+			net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
+			GlStateManager.translate(7 - xc, 7 - yc, 0);
+		}
+
 		float angle = -90;
 		int radius = 24;
 		int amt = 0;
-		for(int i = 0; i < getSizeInventory(); i++) {
+		for(int i = 0; i < getSizeInventory() - 1; i++) {
 			if(itemHandler.getStackInSlot(i).isEmpty())
 				break;
 			amt++;
@@ -367,7 +400,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 
 					net.minecraft.client.renderer.RenderHelper.enableGUIStandardItemLighting();
 					if(progress == 1F) {
-						mc.getRenderItem().renderItemIntoGUI(new ItemStack(ModBlocks.livingrock), xc + radius + 16, yc + 8);
+						mc.getRenderItem().renderItemIntoGUI(Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.runicAltarCatalyst)), xc + radius + 16, yc + 8);
 						GlStateManager.translate(0F, 0F, 100F);
 						mc.getRenderItem().renderItemIntoGUI(new ItemStack(ModItems.twigWand), xc + radius + 24, yc + 8);
 						GlStateManager.translate(0F, 0F, -100F);

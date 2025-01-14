@@ -34,11 +34,11 @@ public class RenderTileRuneAltar extends TileEntitySpecialRenderer<TileRuneAltar
 		GlStateManager.translate(x, y, z);
 
 		int items = 0;
-		for(int i = 0; i < altar.getSizeInventory(); i++)
+		for(int i = 0; i < altar.getSizeInventory() - 1; i++)
 			if(altar.getItemHandler().getStackInSlot(i).isEmpty())
 				break;
 			else items++;
-		float[] angles = new float[altar.getSizeInventory()];
+		float[] angles = new float[altar.getSizeInventory() - 1];
 
 		float anglePer = 360F / items;
 		float totalAngle = 0F;
@@ -48,7 +48,7 @@ public class RenderTileRuneAltar extends TileEntitySpecialRenderer<TileRuneAltar
 		double time = ClientTickHandler.ticksInGame + partticks;
 
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		for(int i = 0; i < altar.getSizeInventory(); i++) {
+		for(int i = 0; i < altar.getSizeInventory() - 1; i++) {
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.5F, 1.25F, 0.5F);
 			GlStateManager.rotate(angles[i] + (float) time, 0F, 1F, 0F);
@@ -62,6 +62,20 @@ public class RenderTileRuneAltar extends TileEntitySpecialRenderer<TileRuneAltar
 			}
 			GlStateManager.popMatrix();
 		}
+
+		// draw the catalyst item if it is present
+		ItemStack last = altar.getItemHandler().getStackInSlot(altar.getSizeInventory() - 1);
+		if (!last.isEmpty()) {
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(0.5F, 0.9F, 0.5F);
+			// Vertical oscillation
+			GlStateManager.translate(0D, 0.075 * Math.sin((time + 5) / 5D), 0F);
+			GlStateManager.rotate((float) time * 2F, 0F, 1F, 0F);
+			Minecraft mc = Minecraft.getMinecraft();
+			mc.getRenderItem().renderItem(last, ItemCameraTransforms.TransformType.GROUND);
+			GlStateManager.popMatrix();
+		}
+
 
 		GlStateManager.disableAlpha();
 		GlStateManager.pushMatrix();
