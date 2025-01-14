@@ -3,6 +3,12 @@ Welcome to the Botania repository.
 
 Botania is a [Minecraft](https://minecraft.net/) mod based on adding natural magic to the game. It's inspired by other magic mods, such as [Thaumcraft](https://www.curseforge.com/minecraft/mc-mods/thaumcraft) or [Blood Magic](https://www.curseforge.com/minecraft/mc-mods/blood-magic).  
 
-The current iteration of Botania for 1.10 is made possible thanks to the massive help by the part of williewillus, who ported the mod through 1.8, 1.9 and 1.10, so go buy him a beer or something, I dunno, he's pretty cool.
+The iteration of Botania for 1.10 is made possible thanks to the massive help by the part of williewillus, who ported the mod through 1.8, 1.9 and 1.10, so go buy him a beer or something, I dunno, he's pretty cool.
 
 Botania is licensed under the [Botania License](http://botaniamod.net/license.php)
+
+### Botania CEU
+
+Botania CEU is an unofficial continuation of Botania for 1.12 maintained by Wizzerinus. Modifications in Botania CEU are not made by Vazkii. This continuation is allowed by Botania License (weak copyleft license similar to LGPL).
+
+[Original Botania repository](https://github.com/VazkiiMods/Botania)
