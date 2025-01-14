@@ -364,8 +364,8 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 		int xc = res.getScaledWidth() / 2;
 		int yc = res.getScaledHeight() / 2;
 
-		ItemStack livingrock = itemHandler.getStackInSlot(getSizeInventory() - 1);
-		if (!livingrock.isEmpty()) {
+		ItemStack catalyst = itemHandler.getStackInSlot(getSizeInventory() - 1);
+		if (!catalyst.isEmpty()) {
 			// Don't ask why 7 has to be here and not 8. I don't know.
 			GlStateManager.translate(xc - 7, yc - 7, 0);
 			net.minecraft.client.renderer.RenderHelper.enableGUIStandardItemLighting();
@@ -400,8 +400,10 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 
 					net.minecraft.client.renderer.RenderHelper.enableGUIStandardItemLighting();
 					if(progress == 1F) {
-						mc.getRenderItem().renderItemIntoGUI(Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.runicAltarCatalyst)), xc + radius + 16, yc + 8);
-						GlStateManager.translate(0F, 0F, 100F);
+						if (catalyst.isEmpty()) {
+							mc.getRenderItem().renderItemIntoGUI(Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.runicAltarCatalyst)), xc + radius + 16, yc + 8);
+							GlStateManager.translate(0F, 0F, 100F);
+						}
 						mc.getRenderItem().renderItemIntoGUI(new ItemStack(ModItems.twigWand), xc + radius + 24, yc + 8);
 						GlStateManager.translate(0F, 0F, -100F);
 					}
