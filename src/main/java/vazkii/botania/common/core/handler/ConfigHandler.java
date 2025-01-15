@@ -106,6 +106,8 @@ public final class ConfigHandler {
 	public static boolean wantPetalApothecaryCatalyst = false;
 	public static String petalApothecaryCatalyst = "";
 	public static int elfPortalSize = 2;
+	public static int runicAltarCapacity = 16;
+	public static int petalApothecaryCapacity = 16;
 
 	public static void loadConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -300,6 +302,12 @@ public final class ConfigHandler {
 
 		desc = "The size of the Elf portal. 1 is a 1x1 square on the internals, 2 is a 3x3 square, etc. Defaults to 2. Warning: large numbers cause lag.";
 		elfPortalSize = loadPropInt("ceu.elfPortalSize", desc, elfPortalSize);
+
+		desc = "The maximum number of inputs Petal Apothecary can process at the same time. Defaults to 16.";
+		petalApothecaryCapacity = loadPropInt("ceu.petalApothecaryCapacity", desc, petalApothecaryCapacity);
+
+		desc = "The maximum number of inputs Runic Altar can process at the same time. Defaults to 16.";
+		runicAltarCapacity = loadPropInt("ceu.runicAltarCapacity", desc, runicAltarCapacity);
 
 		if(config.hasChanged())
 			config.save();

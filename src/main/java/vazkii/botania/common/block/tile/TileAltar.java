@@ -92,7 +92,16 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 		return Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.petalApothecaryCatalyst));
 	}
 
+	private void migrateInventory() {
+		if (itemHandler.getSlots() != getSizeInventory()) {
+			itemHandler.setSize(getSizeInventory());
+			markDirty();
+		}
+	}
+
 	public boolean collideEntityItem(EntityItem item) {
+		migrateInventory();
+
 		ItemStack stack = item.getItem();
 		if(world.isRemote || stack.isEmpty() || item.isDead)
 			return false;
@@ -189,6 +198,8 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 	}
 
 	public void saveLastRecipe() {
+		migrateInventory();
+
 		lastRecipe = new ArrayList<>();
 		for(int i = 0; i < getSizeInventory(); i++) {
 			ItemStack stack = itemHandler.getStackInSlot(i);
@@ -235,6 +246,8 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 	}
 
 	public boolean isEmpty() {
+		migrateInventory();
+
 		for(int i = 0; i < getSizeInventory(); i++)
 			if(!itemHandler.getStackInSlot(i).isEmpty())
 				return false;
@@ -244,6 +257,8 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 
 	@Override
 	public void update() {
+		migrateInventory();
+
 		if(!world.isRemote) {
 			List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.add(0, 1D / 16D * 20D, 0), pos.add(1, 1D / 16D * 32D, 1)));
 
@@ -332,7 +347,7 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 
 	@Override
 	public int getSizeInventory() {
-		return 16;
+		return ConfigHandler.petalApothecaryCapacity;
 	}
 
 	@Override
@@ -367,6 +382,8 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 
 	@SideOnly(Side.CLIENT)
 	public void renderHUD(Minecraft mc, ScaledResolution res) {
+		migrateInventory();
+
 		int xc = res.getScaledWidth() / 2;
 		int yc = res.getScaledHeight() / 2;
 

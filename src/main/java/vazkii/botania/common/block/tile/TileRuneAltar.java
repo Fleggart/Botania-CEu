@@ -333,7 +333,8 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 
 	@Override
 	public int getSizeInventory() {
-		return 17;
+		// catalyst is its own slot
+		return ConfigHandler.runicAltarCapacity + 1;
 	}
 
 	@Nonnull
