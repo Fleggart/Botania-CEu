@@ -303,10 +303,10 @@ public final class ConfigHandler {
 		desc = "The size of the Elf portal. 1 is a 1x1 square on the internals, 2 is a 3x3 square, etc. Defaults to 2. Warning: large numbers cause lag.";
 		elfPortalSize = loadPropInt("ceu.elfPortalSize", desc, elfPortalSize);
 
-		desc = "The maximum number of inputs Petal Apothecary can process at the same time. Defaults to 16.";
+		desc = "The maximum number of inputs Petal Apothecary can process at the same time. Defaults to 16. Warning: reducing this size will remove excess items from the Petal Apothecaries in existing worlds.";
 		petalApothecaryCapacity = loadPropInt("ceu.petalApothecaryCapacity", desc, petalApothecaryCapacity);
 
-		desc = "The maximum number of inputs Runic Altar can process at the same time. Defaults to 16.";
+		desc = "The maximum number of inputs Runic Altar can process at the same time. Defaults to 16. Warning: changing this can have unexpected effects on existing worlds.";
 		runicAltarCapacity = loadPropInt("ceu.runicAltarCapacity", desc, runicAltarCapacity);
 
 		if(config.hasChanged())
