@@ -56,6 +56,8 @@ public class ItemVirus extends ItemMod {
 
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase living, EnumHand hand) {
+		// https://github.com/focamacho/DupeFix-Project/issues/65
+		if (living.isDead || living.getHealth() <= 0) return false;
 		if(living instanceof AbstractHorse && !(living instanceof EntityLlama)) {
 			if(player.world.isRemote)
 				return true;
