@@ -20,15 +20,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.VanillaDoubleChestItemHandler;
+import net.minecraftforge.items.*;
 import vazkii.botania.api.corporea.InvWithLocation;
 import vazkii.botania.common.block.tile.TileSimpleInventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class InventoryHelper {
@@ -101,6 +100,18 @@ public class InventoryHelper {
 			return new ItemStack(it, 1, meta);
 		}
 		return null;
+	}
+
+	public static void resizeInventory(ItemStackHandler inv, int newSize) {
+		List<ItemStack> stacks = new ArrayList<>();
+		for (int i = 0; i < inv.getSlots(); i++) {
+			ItemStack stack = inv.getStackInSlot(i);
+			stacks.add(stack);
+		}
+		inv.setSize(newSize);
+		for (int i = 0; i < newSize && i < stacks.size(); i++) {
+			inv.setStackInSlot(i, stacks.get(i));
+		}
 	}
 
 }

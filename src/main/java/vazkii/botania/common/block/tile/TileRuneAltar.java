@@ -90,7 +90,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 
 	private void migrateInventory() {
 		if (itemHandler.getSlots() != getSizeInventory()) {
-			itemHandler.setSize(getSizeInventory());
+			InventoryHelper.resizeInventory(itemHandler, getSizeInventory());
 			markDirty();
 		}
 	}

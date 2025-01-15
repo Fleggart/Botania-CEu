@@ -94,7 +94,7 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 
 	private void migrateInventory() {
 		if (itemHandler.getSlots() != getSizeInventory()) {
-			itemHandler.setSize(getSizeInventory());
+			InventoryHelper.resizeInventory(itemHandler, getSizeInventory());
 			markDirty();
 		}
 	}
