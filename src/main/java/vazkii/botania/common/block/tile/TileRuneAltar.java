@@ -88,10 +88,18 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 		return false;
 	}
 
+	private void migrateInventory() {
+		if (itemHandler.getSlots() != getSizeInventory()) {
+			itemHandler.setSize(getSizeInventory());
+			markDirty();
+		}
+	}
+
 	public boolean addItem(@Nullable EntityPlayer player, ItemStack stack, @Nullable EnumHand hand) {
 		if(cooldown > 0 || stack.getItem() == ModItems.twigWand || stack.getItem() == ModItems.lexicon)
 			return false;
 
+		migrateInventory();
 		if(InventoryHelper.stringifyStack(stack).equals(ConfigHandler.runicAltarCatalyst)) {
 			int catalystSlot = getSizeInventory() - 1;
 			if (addItemFromStack(player, stack, catalystSlot)) {
@@ -151,6 +159,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 
 	@Override
 	public void update() {
+		migrateInventory();
 
 		// Update every tick.
 		recieveMana(0);
@@ -223,6 +232,8 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 	}
 
 	public void saveLastRecipe() {
+		migrateInventory();
+
 		lastRecipe = new ArrayList<>();
 		for(int i = 0; i < getSizeInventory() - 1; i++) {
 			ItemStack stack = itemHandler.getStackInSlot(i);
@@ -252,6 +263,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 		if (world.isRemote)
 			return;
 
+		migrateInventory();
 		RecipeRuneAltar recipe = null;
 
 		if(currentRecipe != null)
@@ -294,6 +306,8 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 	}
 
 	public boolean isEmpty() {
+		migrateInventory();
+
 		for(int i = 0; i < getSizeInventory() - 1; i++)
 			if(!itemHandler.getStackInSlot(i).isEmpty())
 				return false;
@@ -359,6 +373,8 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 	}
 
 	public void renderHUD(Minecraft mc, ScaledResolution res) {
+		migrateInventory();
+
 		int xc = res.getScaledWidth() / 2;
 		int yc = res.getScaledHeight() / 2;
 
