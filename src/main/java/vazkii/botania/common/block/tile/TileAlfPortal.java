@@ -197,6 +197,11 @@ public class TileAlfPortal extends TileMod implements ITickable {
 	}
 
 	private boolean validateItemUsage(ItemStack inputStack) {
+		if (stacksIn.size() >= 128) {
+			// don't chunk ban when the queue of portal is large
+			return false;
+		}
+
 		if(inputStack.getItem() == ModItems.lexicon)
 			return true;
 
@@ -214,8 +219,6 @@ public class TileAlfPortal extends TileMod implements ITickable {
 				}
 			}
 		}
-		if(inputStack.getItem() == Items.BREAD) //Don't teleport bread. (See also: #2403)
-			explode = true;
 
 		return false;
 	}
