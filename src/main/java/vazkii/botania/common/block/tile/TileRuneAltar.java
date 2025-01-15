@@ -96,7 +96,6 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 			int catalystSlot = getSizeInventory() - 1;
 			if (addItemFromStack(player, stack, catalystSlot)) {
 				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
-				System.out.println("add item to slot");
 				return true;
 			}
 			// place livingrock in world if the slot is used up
@@ -106,7 +105,6 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 				item.setPickupDelay(40);
 				item.motionX = item.motionY = item.motionZ = 0;
 				world.spawnEntity(item);
-				System.out.println("add item to world");
 			}
 
 			return true;
