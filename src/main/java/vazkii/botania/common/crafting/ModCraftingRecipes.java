@@ -24,6 +24,7 @@ import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.common.Botania;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.ModFluffBlocks;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.crafting.recipe.AncientWillRecipe;
 import vazkii.botania.common.crafting.recipe.ArmorUpgradeRecipe;
 import vazkii.botania.common.crafting.recipe.BlackHoleTalismanExtractRecipe;
@@ -428,7 +429,7 @@ public final class ModCraftingRecipes {
 		recipeTerraPlate = ModBlocks.terraPlate.getRegistryName();
 		recipeFlowerBag = ModItems.flowerBag.getRegistryName();
 
-		if(Botania.gardenOfGlassLoaded) {
+		if(ConfigHandler.registerGogRecipes) {
 			recipeRootToSapling = gogPath("root_to_sapling");
 			recipeRootToFertilizer = gogPath("root_to_fertilizer");
 			recipePebbleCobblestone = gogPath("pebble_to_cobblestone");
@@ -687,7 +688,7 @@ public final class ModCraftingRecipes {
 	}
 
 	private static ResourceLocation gogPath(String path) {
-		if(Botania.gardenOfGlassLoaded) {
+		if(ConfigHandler.registerGogRecipes) {
 			return new ResourceLocation(LibMisc.MOD_ID, "garden_of_glass/" + path);
 		} else {
 			return path(path);

@@ -37,6 +37,7 @@ import vazkii.botania.api.recipe.IElvenItem;
 import vazkii.botania.api.recipe.IFlowerComponent;
 import vazkii.botania.client.core.handler.ModelHandler;
 import vazkii.botania.common.Botania;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.entity.EntityDoppleganger;
 import vazkii.botania.common.entity.EntityEnderAirBottle;
 import vazkii.botania.common.item.ItemMod;
@@ -124,7 +125,7 @@ public class ItemManaResource extends ItemMod implements IFlowerComponent, IElve
 			for(int i = 0; i < types; i++) {
 				if("UNUSED".equals(LibItemNames.MANA_RESOURCE_NAMES[i]))
 					continue;
-				if(Botania.gardenOfGlassLoaded || i != 20 && i != 21)
+				if(ConfigHandler.registerGogResources || i != 20 && i != 21)
 					stacks.add(new ItemStack(this, 1, i));
 			}
 		}

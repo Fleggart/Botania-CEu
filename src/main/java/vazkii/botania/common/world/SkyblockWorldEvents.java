@@ -29,9 +29,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
-import vazkii.botania.common.Botania;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.tile.TileManaFlame;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.item.ModItems;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 
@@ -49,6 +49,7 @@ public final class SkyblockWorldEvents {
 
 	@SubscribeEvent
 	public static void onPlayerUpdate(LivingUpdateEvent event) {
+		if (!ConfigHandler.registerSkyblockHooks) return;
 		if(event.getEntityLiving() instanceof EntityPlayer && !event.getEntityLiving().world.isRemote) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			NBTTagCompound data = player.getEntityData();
@@ -72,9 +73,10 @@ public final class SkyblockWorldEvents {
 
 	@SubscribeEvent
 	public static void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-		if(Botania.gardenOfGlassLoaded) {
+		if(ConfigHandler.registerGogResources) {
 			ItemStack equipped = event.getItemStack();
 			if(equipped.isEmpty() && event.getEntityPlayer().isSneaking()) {
+				if (!ConfigHandler.obtainablePebbles) return;
 				Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
 				if(ImmutableSet.of(Blocks.GRASS, Blocks.GRASS_PATH, Blocks.FARMLAND, Blocks.DIRT, ModBlocks.altGrass).contains(block)) {
 					if(event.getWorld().isRemote)
@@ -90,6 +92,7 @@ public final class SkyblockWorldEvents {
 					event.setCancellationResult(EnumActionResult.SUCCESS);
 				}
 			} else if(!equipped.isEmpty() && equipped.getItem() == Items.BOWL) {
+				if (!ConfigHandler.obtainableWaterBowl) return;
 				RayTraceResult rtr = ToolCommons.raytraceFromEntity(event.getWorld(), event.getEntityPlayer(), true, 4.5F);
 				if(rtr != null) {
 					if (rtr.typeOfHit == net.minecraft.util.math.RayTraceResult.Type.BLOCK) {
@@ -113,7 +116,7 @@ public final class SkyblockWorldEvents {
 
 	@SubscribeEvent
 	public static void onDrops(BlockEvent.HarvestDropsEvent event) {
-		if(Botania.gardenOfGlassLoaded && event.getState().getBlock() == Blocks.TALLGRASS) {
+		if(ConfigHandler.diverseSeedDrops && event.getState().getBlock() == Blocks.TALLGRASS) {
 			ItemStack stackToRemove = ItemStack.EMPTY;
 			for(ItemStack stack : event.getDrops())
 				if(stack.getItem() == Items.WHEAT_SEEDS && event.getWorld().rand.nextInt(4) == 0) {
@@ -129,6 +132,7 @@ public final class SkyblockWorldEvents {
 	}
 
 	public static void spawnPlayer(EntityPlayer player, BlockPos pos, boolean fabricated) {
+		if (!ConfigHandler.registerSkyblockHooks) return;
 		NBTTagCompound data = player.getEntityData();
 		if(!data.hasKey(EntityPlayer.PERSISTED_NBT_TAG))
 			data.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
@@ -165,6 +169,7 @@ public final class SkyblockWorldEvents {
 	}
 
 	public static void createSkyblock(World world, BlockPos pos) {
+		if (!ConfigHandler.registerSkyblockHooks) return;
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 4; j++)
 				for(int k = 0; k < 3; k++)

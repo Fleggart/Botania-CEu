@@ -380,7 +380,7 @@ public class TCAspects {
 		}
 
 		//Garden of Glass
-		if(Botania.gardenOfGlassLoaded) {
+		if(ConfigHandler.registerGogResources) {
 			register(ModItems.waterBowl, 0, new AspectList(new ItemStack(Items.BOWL)).add(WATER, 10));
 			register(LibOreDict.PEBBLE, new AspectList().add(EARTH, 1));
 			register(ModBlocks.root, 0, new AspectList().add(PLANT, 15).add(LIFE, 5));

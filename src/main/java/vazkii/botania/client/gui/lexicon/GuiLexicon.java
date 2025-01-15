@@ -51,6 +51,7 @@ import vazkii.botania.client.gui.lexicon.button.GuiButtonScaleChange;
 import vazkii.botania.client.gui.lexicon.button.GuiButtonUpdateWarning;
 import vazkii.botania.client.lib.LibResources;
 import vazkii.botania.common.Botania;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.handler.ModSounds;
 import vazkii.botania.common.item.ItemLexicon;
 import vazkii.botania.common.lexicon.LexiconData;
@@ -612,7 +613,7 @@ public class GuiLexicon extends GuiScreen {
 		tutorial.add(LexiconData.endoflame);
 		tutorial.add(LexiconData.functionalIntro);
 		tutorial.add(LexiconData.runicAltar);
-		if(Botania.gardenOfGlassLoaded)
+		if(ConfigHandler.registerGogRecipes)
 			tutorial.add(LexiconData.gardenOfGlass);
 
 		MinecraftForge.EVENT_BUS.post(new BotaniaTutorialStartEvent(tutorial));

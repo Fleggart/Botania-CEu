@@ -109,11 +109,37 @@ public final class ConfigHandler {
 	public static int runicAltarCapacity = 16;
 	public static int petalApothecaryCapacity = 16;
 
+	private static boolean gogChecked = false;
+	public static boolean disablePetalApothecaryBucketBehavior = false;
+	public static boolean registerGogResources = false;
+	public static boolean buffedOrechid = false;
+	public static boolean registerGogRecipes = false;
+	public static boolean obtainablePebbles = false;
+	public static boolean obtainableWaterBowl = false;
+	public static boolean lexiconGogRecipe = false;
+	public static boolean registerSkyblockHooks = false;
+	public static boolean diverseSeedDrops = false;
+
 	public static void loadConfig(File configFile) {
 		config = new Configuration(configFile);
 
 		config.load();
+		if (!gogChecked && Botania.gardenOfGlassLoaded)
+			populateGogSettings();
+		gogChecked = true;
 		load();
+	}
+
+	private static void populateGogSettings() {
+		disablePetalApothecaryBucketBehavior = true;
+		registerGogResources = true;
+		buffedOrechid = true;
+		registerGogRecipes = true;
+		obtainablePebbles = true;
+		obtainableWaterBowl = true;
+		lexiconGogRecipe = true;
+		registerSkyblockHooks = true;
+		diverseSeedDrops = true;
 	}
 
 	public static void load() {
@@ -309,8 +335,46 @@ public final class ConfigHandler {
 		desc = "The maximum number of inputs Runic Altar can process at the same time. Defaults to 16. Warning: changing this can have unexpected effects on existing worlds.";
 		runicAltarCapacity = loadPropInt("ceu.runicAltarCapacity", desc, runicAltarCapacity);
 
+		desc = "Should Petal Apothecary be NOT clickable with a bucket? Part of Garden of Glass.";
+		disablePetalApothecaryBucketBehavior = loadPropBool("ceu.gog.disablePetalApothecaryBucketBehavior", desc, disablePetalApothecaryBucketBehavior);
+
+		desc = "Should resources from Garden of Glass, like Pebbles, be enabled? This controls the existence of items themselves.";
+		registerGogResources = loadPropBool("ceu.gog.registerGogResources", desc, registerGogResources);
+
+		desc = "Should Orechid be significantly more powerful? Part of Garden of Glass. You probably don't want this otherwise.";
+		buffedOrechid = loadPropBool("ceu.gog.buffedOrechid", desc, buffedOrechid);
+
+		desc = "Should recipes from Garden of Glass be enabled?";
+		registerGogRecipes = loadPropBool("ceu.gog.registerGogRecipes", desc, registerGogRecipes);
+
+		desc = "Should Pebbles be obtainable by shift-right-clicking grass blocks? Part of Garden of Glass.";
+		obtainablePebbles = loadPropBool("ceu.gog.obtainablePebbles", desc, obtainablePebbles);
+
+		desc = "Should Water Bowl be obtainable by right-clicking water? Part of Garden of Glass.";
+		obtainableWaterBowl = loadPropBool("ceu.gog.obtainableWaterBowl", desc, obtainableWaterBowl);
+
+		desc = "Should Lexicon be obtainable by right-clicking a Mana Flame with a sapling? Part of Garden of Glass.";
+		lexiconGogRecipe = loadPropBool("ceu.gog.lexiconGogRecipe", desc, lexiconGogRecipe);
+
+		desc = "Should hooks related to skyblock islands be enabled? Part of Garden of Glass.";
+		registerSkyblockHooks = loadPropBool("ceu.gog.registerSkyblockHooks", desc, registerSkyblockHooks);
+
+		desc = "Should seeds dropped from Tall Grass be diversified? Part of Garden of Glass.";
+		diverseSeedDrops = loadPropBool("ceu.gog.diverseSeedDrops", desc, diverseSeedDrops);
+
+		checkGogSettings();
+
 		if(config.hasChanged())
 			config.save();
+	}
+
+	private static void checkGogSettings() {
+		if (obtainablePebbles && !registerGogResources) {
+			throw new IllegalArgumentException("If obtainablePebbles is enabled, registerGogResources must also be enabled!");
+		}
+		if (obtainableWaterBowl && !registerGogResources) {
+			throw new IllegalArgumentException("If obtainableWaterBowl is enabled, registerGogResources must also be enabled!");
+		}
 	}
 
 	private static void checkItemID(String description, String s) {

@@ -12,10 +12,8 @@ package vazkii.botania.common.crafting;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import scala.runtime.RichDouble;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipePetals;
-import vazkii.botania.common.Botania;
 import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.helper.ItemNBTHelper;
 import vazkii.botania.common.item.block.ItemBlockSpecialFlower;
@@ -103,7 +101,7 @@ public final class ModPetalRecipes {
 		heiseiDreamRecipe = BotaniaAPI.registerPetalRecipe(ItemBlockSpecialFlower.ofType(LibBlockNames.SUBTILE_HEISEI_DREAM), magenta, magenta, purple, pink, runeWrath, pixieDust);
 		tigerseyeRecipe = BotaniaAPI.registerPetalRecipe(ItemBlockSpecialFlower.ofType(LibBlockNames.SUBTILE_TIGERSEYE), yellow, brown, orange, lime, runeAutumn);
 
-		if(Botania.gardenOfGlassLoaded)
+		if(ConfigHandler.registerGogRecipes)
 			orechidRecipe = BotaniaAPI.registerPetalRecipe(ItemBlockSpecialFlower.ofType(LibBlockNames.SUBTILE_ORECHID), gray, gray, yellow, yellow, green, green, red, red);
 		else orechidRecipe = BotaniaAPI.registerPetalRecipe(ItemBlockSpecialFlower.ofType(LibBlockNames.SUBTILE_ORECHID), gray, gray, yellow, green, red, runePride, runeGreed, redstoneRoot, pixieDust);
 

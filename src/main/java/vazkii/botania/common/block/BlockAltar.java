@@ -50,6 +50,7 @@ import vazkii.botania.client.core.handler.ModelHandler;
 import vazkii.botania.common.Botania;
 import vazkii.botania.common.block.tile.TileAltar;
 import vazkii.botania.common.block.tile.TileSimpleInventory;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.helper.InventoryHelper;
 import vazkii.botania.common.item.ModItems;
 import vazkii.botania.common.item.rod.ItemWaterRod;
@@ -176,7 +177,7 @@ public class BlockAltar extends BlockMod implements ILexiconable {
 				world.checkLight(pos);
 
 				return true;
-			} else if(!stack.isEmpty() && stack.getItem() == Items.BUCKET && (tile.hasWater || tile.hasLava) && !Botania.gardenOfGlassLoaded) {
+			} else if(!stack.isEmpty() && stack.getItem() == Items.BUCKET && (tile.hasWater || tile.hasLava) && !ConfigHandler.disablePetalApothecaryBucketBehavior) {
 				ItemStack bucket = tile.hasLava ? new ItemStack(Items.LAVA_BUCKET) : new ItemStack(Items.WATER_BUCKET);
 				if(stack.getCount() == 1)
 					player.setHeldItem(hand, bucket);

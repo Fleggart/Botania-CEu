@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import vazkii.botania.common.Botania;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.item.block.ItemBlockMod;
 
 public class ItemBlockBlaze extends ItemBlockMod {
@@ -15,6 +16,6 @@ public class ItemBlockBlaze extends ItemBlockMod {
     @Override
     public int getItemBurnTime(ItemStack stack) {
         return TileEntityFurnace.getItemBurnTime(new ItemStack(Items.BLAZE_ROD))
-                * (Botania.gardenOfGlassLoaded ? 5 : 10);
+                * (ConfigHandler.registerGogRecipes ? 5 : 10);
     }
 }

@@ -26,7 +26,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.ModAPIManager;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -110,6 +109,10 @@ public class Botania {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		gardenOfGlassLoaded = Loader.isModLoaded("gardenofglass");
+		if (gardenOfGlassLoaded) {
+			LOGGER.warn("Garden of Glass is loaded. It is not necessary with Botania CEu. All features of GoG can be configured separately (search for ceu.gog in the config file).");
+			LOGGER.warn("As a fallback, all config options in GoG have been automatically enabled.");
+		}
 
 		thaumcraftLoaded = Loader.isModLoaded("thaumcraft");
 		bcApiLoaded = Loader.isModLoaded("buildcraftlib");
@@ -126,7 +129,7 @@ public class Botania {
 		ModBrews.init();
 		ModMultiblocks.init();
 
-		if(Botania.gardenOfGlassLoaded)
+		if(ConfigHandler.registerSkyblockHooks)
 			new WorldTypeSkyblock();
 
 		CriteriaTriggers.register(AlfPortalTrigger.INSTANCE);
@@ -158,9 +161,7 @@ public class Botania {
 		MinecraftForge.EVENT_BUS.register(ManaNetworkHandler.instance);
 		MinecraftForge.EVENT_BUS.register(TileCorporeaIndex.getInputHandler());
 		MinecraftForge.EVENT_BUS.register(new LootHandler());
-
-		if(Botania.gardenOfGlassLoaded)
-			MinecraftForge.EVENT_BUS.register(SkyblockWorldEvents.class);
+		MinecraftForge.EVENT_BUS.register(SkyblockWorldEvents.class);
 
 		FMLInterModComms.sendMessage("projecte", "interdictionblacklist", EntityManaBurst.class.getCanonicalName());
 
@@ -227,7 +228,7 @@ public class Botania {
 //		event.registerServerCommand(new CommandDownloadLatest());
 		event.registerServerCommand(new CommandShare());
 		event.registerServerCommand(new CommandOpen());
-		if(Botania.gardenOfGlassLoaded)
+		if(ConfigHandler.registerSkyblockHooks)
 			event.registerServerCommand(new CommandSkyblockSpread());
 	}
 

@@ -116,7 +116,7 @@ public final class BotaniaCreativeTab extends CreativeTabs {
 		addItem(ModItems.astrolabe);
 		addItem(ModItems.blackHoleTalisman);
 
-		if(Botania.gardenOfGlassLoaded) {
+		if(ConfigHandler.registerGogResources) {
 			addBlock(ModBlocks.root);
 			addItem(ModItems.waterBowl);
 		}

@@ -396,7 +396,7 @@ public final class LexiconData {
 		flowerBag.setLexiconPages(new PageText("0"), new PageText("2"),
 				new PageCraftingRecipe("1", ModCraftingRecipes.recipeFlowerBag));
 
-		if (Botania.gardenOfGlassLoaded) {
+		if (ConfigHandler.registerGogRecipes) {
 			gardenOfGlass = new BasicLexiconEntry(LibLexicon.BASICS_GARDEN_OF_GLASS, categoryBasics);
 			gardenOfGlass.setLexiconPages(new PageText("0"), new PageText("1"), new PageText("2"),
 					new PageCraftingRecipe("3", ModCraftingRecipes.recipeRootToSapling),
@@ -561,10 +561,10 @@ public final class LexiconData {
 		tigerseye = new BasicLexiconEntry(LibLexicon.FFLOWER_TIGERSEYE, categoryFunctionalFlowers);
 		tigerseye.setLexiconPages(new PageText("0"), new PagePetalRecipe<>("1", ModPetalRecipes.tigerseyeRecipe));
 
-		orechid = Botania.gardenOfGlassLoaded ? new BasicLexiconEntry(LibLexicon.FFLOWER_ORECHID, categoryFunctionalFlowers)
+		orechid = ConfigHandler.registerGogRecipes ? new BasicLexiconEntry(LibLexicon.FFLOWER_ORECHID, categoryFunctionalFlowers)
 				: new AlfheimLexiconEntry(LibLexicon.FFLOWER_ORECHID, categoryFunctionalFlowers);
 		orechid.setLexiconPages(new PageText("0"), new PagePetalRecipe<>("1", ModPetalRecipes.orechidRecipe));
-		if (Botania.gardenOfGlassLoaded)
+		if (ConfigHandler.registerGogRecipes)
 			orechid.setPriority();
 
 		orechidIgnem = new AlfheimLexiconEntry(LibLexicon.FFLOWER_ORECHID_IGNEM, categoryFunctionalFlowers);
@@ -826,7 +826,7 @@ public final class LexiconData {
 		canopyDrum = new BasicLexiconEntry(LibLexicon.DEVICE_CANOPY_DRUM, categoryDevices);
 		canopyDrum.setLexiconPages(new PageText("0"), new PageCraftingRecipe("1", ModCraftingRecipes.recipeCanopyDrum));
 
-		cocoon = Botania.gardenOfGlassLoaded ? new BasicLexiconEntry(LibLexicon.DEVICE_COCOON, categoryDevices)
+		cocoon = ConfigHandler.registerGogRecipes ? new BasicLexiconEntry(LibLexicon.DEVICE_COCOON, categoryDevices)
 				: new AlfheimLexiconEntry(LibLexicon.DEVICE_COCOON, categoryDevices);
 		cocoon.setLexiconPages(new PageText("0"), new PageText("1"),
 				new PageCraftingRecipe("2", ModCraftingRecipes.recipeCocoon));

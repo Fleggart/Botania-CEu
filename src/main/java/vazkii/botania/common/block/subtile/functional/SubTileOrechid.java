@@ -121,11 +121,11 @@ public class SubTileOrechid extends SubTileFunctional {
 	}
 
 	public int getCost() {
-		return Botania.gardenOfGlassLoaded ? COST_GOG : COST;
+		return ConfigHandler.buffedOrechid ? COST_GOG : COST;
 	}
 
 	public int getDelay() {
-		return Botania.gardenOfGlassLoaded ? DELAY_GOG : DELAY;
+		return ConfigHandler.buffedOrechid ? DELAY_GOG : DELAY;
 	}
 
 	@Override

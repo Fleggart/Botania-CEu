@@ -163,7 +163,7 @@ public final class ModManaAlchemyRecipes {
 
 		chorusRecipe = BotaniaAPI.registerManaAlchemyRecipe(new ItemStack(Blocks.CHORUS_FLOWER), new ItemStack(Items.CHORUS_FRUIT_POPPED), 10000);
 		
-		if(Botania.gardenOfGlassLoaded) {
+		if(ConfigHandler.registerGogRecipes) {
 			prismarineRecipes = new ArrayList<>();
 			prismarineRecipes.add(BotaniaAPI.registerManaAlchemyRecipe(new ItemStack(Items.PRISMARINE_SHARD), new ItemStack(Items.QUARTZ), 1000));
 			prismarineRecipes.add(BotaniaAPI.registerManaAlchemyRecipe(new ItemStack(Items.PRISMARINE_CRYSTALS), new ItemStack(Items.PRISMARINE_SHARD), 500));

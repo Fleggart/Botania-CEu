@@ -19,6 +19,7 @@ import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipeManaInfusion;
 import vazkii.botania.common.Botania;
 import vazkii.botania.common.block.ModBlocks;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.item.ModItems;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public final class ModManaInfusionRecipes {
 		managlassRecipe = BotaniaAPI.registerManaInfusionRecipe(new ItemStack(ModBlocks.manaGlass), new ItemStack(Blocks.GLASS), 150);
 		manaStringRecipe = BotaniaAPI.registerManaInfusionRecipe(new ItemStack(ModItems.manaResource, 1, 16), new ItemStack(Items.STRING), 5000);
 
-		if(Botania.gardenOfGlassLoaded)
+		if(ConfigHandler.registerGogRecipes)
 			sugarCaneRecipe = BotaniaAPI.registerManaInfusionRecipe(new ItemStack(Items.REEDS), new ItemStack(Blocks.HAY_BLOCK), 2000);
 
 		BotaniaAPI.registerManaInfusionRecipe(new ItemStack(ModItems.manaBottle), new ItemStack(Items.GLASS_BOTTLE), 5000);
