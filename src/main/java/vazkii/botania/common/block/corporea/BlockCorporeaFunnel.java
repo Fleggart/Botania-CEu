@@ -61,8 +61,8 @@ public class BlockCorporeaFunnel extends BlockCorporeaBase implements ILexiconab
 		boolean powered = state.getValue(BotaniaStateProps.POWERED);
 
 		if(power && !powered) {
-			((TileCorporeaFunnel) world.getTileEntity(pos)).doRequest();
 			world.setBlockState(pos, state.withProperty(BotaniaStateProps.POWERED, true), 4);
+			((TileCorporeaFunnel) world.getTileEntity(pos)).doRequest();
 		} else if(!power && powered)
 			world.setBlockState(pos, state.withProperty(BotaniaStateProps.POWERED, false), 4);
 	}
