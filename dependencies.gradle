@@ -1,0 +1,50 @@
+def load_thaumcraft = false
+def load_drawers = false
+def load_albedo = false
+
+final def compile_dependencies = [
+        'com.mod-buildcraft:buildcraft-api:7.99.17': [true],   // compile-time + runtime dependency, API
+        'com.azanor.baubles:Baubles:1.12-1.5.2': [true],       // compile-time + runtime dependency
+        'mezz.jei:jei_1.12.2:4.13.1.220': [true],              // compile-time dependency + dev env
+        'curse.maven:thaumcraft-223628:2629023': [load_thaumcraft],
+        'curse.maven:albedo-275300:2714505': [load_albedo],
+]
+
+final def runtime_only_dependencies = [
+        'curse.maven:hwyla-253449:2568751': [true],
+        'curse.maven:storage-drawers-223852:4655859': [load_drawers],
+        'curse.maven:chameleon-230497:2450900': [load_drawers],
+]
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "buildcraft"
+        url = "https://mod-buildcraft.com/maven"
+    }
+    maven {
+        name = "thiakil"
+        url = "http://maven.thiakil.com"
+    }
+    maven {
+        url = "http://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        url "https://www.cursemaven.com"
+    }
+}
+
+dependencies {
+    compile_dependencies.entrySet().forEach {
+        if (it.value.any { it.toBoolean() }) {
+            deobfCompile it.key
+        } else {
+            compileOnly it.key
+        }
+    }
+    runtime_only_dependencies.entrySet().forEach {
+        if (it.value.any { it.toBoolean() }) {
+            deobfCompile it.key
+        }
+    }
+}
