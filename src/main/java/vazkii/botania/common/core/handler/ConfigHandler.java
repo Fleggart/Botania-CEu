@@ -26,10 +26,7 @@ import vazkii.botania.common.core.helper.InventoryHelper;
 import vazkii.botania.common.lib.LibMisc;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public final class ConfigHandler {
@@ -101,10 +98,11 @@ public final class ConfigHandler {
 	public static double flowerTallChance = 0.05;
 	public static int mushroomQuantity = 40;
 
-	public static String runicAltarCatalyst = "botania:livingrock";
+	public static String[] runicAltarCatalysts = {"botania:livingrock"};
+	public static Set<String> runicAltarCatalystsSet = new HashSet<>();
 	public static String[] runicAltarRetainedItems = IntStream.rangeClosed(0, 15).mapToObj(i -> "botania:rune@" + i).toArray(String[]::new);
-	public static boolean wantPetalApothecaryCatalyst = false;
-	public static String petalApothecaryCatalyst = "";
+	public static String[] petalApothecaryCatalysts = {};
+	public static Set<String> petalApothecaryCatalystsSet = new HashSet<>();
 	public static int elfPortalSize = 2;
 	public static int runicAltarCapacity = 16;
 	public static int petalApothecaryCapacity = 16;
@@ -314,17 +312,18 @@ public final class ConfigHandler {
 		desc = "The quantity of Botania mushrooms to generate underground, in the world, defaults to 40, the lower the number the less patches generate.";
 		mushroomQuantity = loadPropInt("worldgen.mushroom.quantity", desc, mushroomQuantity);
 
-		desc = "The item that should be used as the catalyst for Runic Altar. This item must not be in any Runic Altar recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). Default is botania:livingrock.";
-		runicAltarCatalyst = loadPropString("ceu.runicAltarCatalyst", desc, runicAltarCatalyst);
+		desc = "The items that can be used as the catalyst for Runic Altar. These items must not be in any Runic Altar recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). Default is botania:livingrock.";
+		runicAltarCatalysts = loadPropStringList("ceu.runicAltarCatalysts", desc, runicAltarCatalysts);
+		runicAltarCatalystsSet.clear();
+        runicAltarCatalystsSet.addAll(Arrays.asList(runicAltarCatalysts));
 
 		desc = "The items that should be retained after the Runic Altar finishes a craft. By default, includes all of Botania's runes.";
 		runicAltarRetainedItems = loadPropStringList("ceu.runicAltarRetainedItems", desc, runicAltarRetainedItems);
 
-		desc = "Should a custom Petal Apothecary catalyst be used? Default catalyst is any seed item. With a custom catalyst, only one item can be used.";
-		wantPetalApothecaryCatalyst = loadPropBool("ceu.wantPetalApothecaryCatalyst", desc, wantPetalApothecaryCatalyst);
-
-		desc = "The item that should be used as the catalyst for Petal Apothecary. This item must not be in any Petal Apothecary recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). Has no effect if wantPetalApothecaryCatalyst is false (the default).";
-		petalApothecaryCatalyst = loadPropString("ceu.petalApothecaryCatalyst", desc, petalApothecaryCatalyst);
+		desc = "The items that can be used as the catalyst for Petal Apothecary. These items must not be in any Petal Apothecary recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). The default is empty, which means any seed item can be used as a catalyst.";
+		petalApothecaryCatalysts = loadPropStringList("ceu.petalApothecaryCatalysts", desc, petalApothecaryCatalysts);
+		petalApothecaryCatalystsSet.clear();
+		petalApothecaryCatalystsSet.addAll(Arrays.asList(petalApothecaryCatalysts));
 
 		desc = "The size of the Elf portal. 1 is a 1x1 square on the internals, 2 is a 3x3 square, etc. Defaults to 2. Warning: large numbers cause lag.";
 		elfPortalSize = loadPropInt("ceu.elfPortalSize", desc, elfPortalSize);
@@ -388,12 +387,14 @@ public final class ConfigHandler {
 		if(enableShedding)
 			SheddingHandler.loadFromConfig(config);
 
-		checkItemID("Runic Altar Catalyst", runicAltarCatalyst);
-		if (wantPetalApothecaryCatalyst)
-			checkItemID("Petal Apothecary Catalyst", petalApothecaryCatalyst);
-		for (String s : runicAltarRetainedItems) {
+		if (runicAltarCatalystsSet.isEmpty())
+			throw new IllegalArgumentException("Must have at least 1 Runic Altar catalyst");
+		for (String s : runicAltarCatalysts)
+			checkItemID("Runic Altar Catalyst", s);
+		for (String s : runicAltarRetainedItems)
 			checkItemID("Runic Altar Retained Item", s);
-		}
+		for (String s : petalApothecaryCatalysts)
+			checkItemID("Petal Apothecary Catalyst", s);
 
 		if(config.hasChanged())
 			config.save();

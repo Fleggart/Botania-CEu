@@ -81,15 +81,15 @@ public class TileAltar extends TileSimpleInventory implements IPetalApothecary, 
 	int recipeKeepTicks = 0;
 
 	private boolean isCatalystItem(ItemStack stack) {
-		if (!ConfigHandler.wantPetalApothecaryCatalyst)
+		if (ConfigHandler.petalApothecaryCatalystsSet.isEmpty())
 			return SEED_PATTERN.matcher(stack.getTranslationKey()).find();
-		return InventoryHelper.stringifyStack(stack).equals(ConfigHandler.petalApothecaryCatalyst);
+		return ConfigHandler.petalApothecaryCatalystsSet.contains(InventoryHelper.stringifyStack(stack));
 	}
 
 	private ItemStack getCatalystItemStack() {
-		if (!ConfigHandler.wantPetalApothecaryCatalyst)
+		if (ConfigHandler.petalApothecaryCatalystsSet.isEmpty())
 			return new ItemStack(Items.WHEAT_SEEDS);
-		return Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.petalApothecaryCatalyst));
+		return Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.petalApothecaryCatalysts[0]));
 	}
 
 	private void migrateInventory() {

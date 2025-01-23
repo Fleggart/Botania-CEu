@@ -100,7 +100,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 			return false;
 
 		migrateInventory();
-		if(InventoryHelper.stringifyStack(stack).equals(ConfigHandler.runicAltarCatalyst)) {
+		if(ConfigHandler.runicAltarCatalystsSet.contains(InventoryHelper.stringifyStack(stack))) {
 			int catalystSlot = getSizeInventory() - 1;
 			if (addItemFromStack(player, stack, catalystSlot)) {
 				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
@@ -170,7 +170,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 				if(!item.isDead && !item.getItem().isEmpty()) {
 					ItemStack stack = item.getItem();
 					boolean acceptsCatalyst = itemHandler.getStackInSlot(getSizeInventory() - 1).isEmpty();
-					boolean isCatalyst = InventoryHelper.stringifyStack(stack).equals(ConfigHandler.runicAltarCatalyst);
+					boolean isCatalyst = ConfigHandler.runicAltarCatalystsSet.contains(InventoryHelper.stringifyStack(stack));
 					if((acceptsCatalyst && isCatalyst) || (!isCatalyst && cooldown == 0)) {
 						addItem(null, stack, null);
 					}
@@ -416,7 +416,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 					net.minecraft.client.renderer.RenderHelper.enableGUIStandardItemLighting();
 					if(progress == 1F) {
 						if (catalyst.isEmpty()) {
-							mc.getRenderItem().renderItemIntoGUI(Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.runicAltarCatalyst)), xc + radius + 16, yc + 8);
+							mc.getRenderItem().renderItemIntoGUI(Objects.requireNonNull(InventoryHelper.destringifyStack(ConfigHandler.runicAltarCatalysts[0])), xc + radius + 16, yc + 8);
 							GlStateManager.translate(0F, 0F, 100F);
 						}
 						mc.getRenderItem().renderItemIntoGUI(new ItemStack(ModItems.twigWand), xc + radius + 24, yc + 8);
