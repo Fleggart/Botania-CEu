@@ -34,7 +34,6 @@ public final class ConfigHandler {
 	public static Configuration config;
 	public static ConfigAdaptor adaptor;
 
-
 	public static boolean useAdaptativeConfig = true;
 
 	public static boolean useShaders = true;
@@ -70,7 +69,7 @@ public final class ConfigHandler {
 	public static boolean matrixMode = false;
 	public static boolean referencesEnabled = true;
 
-//	public static boolean versionCheckEnabled = true;
+	// public static boolean versionCheckEnabled = true;
 	public static int spreaderPositionShift = 1;
 	public static int spreaderTraceTime = 400;
 	public static boolean flowerForceCheck = true;
@@ -98,14 +97,16 @@ public final class ConfigHandler {
 	public static double flowerTallChance = 0.05;
 	public static int mushroomQuantity = 40;
 
-	public static String[] runicAltarCatalysts = {"botania:livingrock"};
+	public static String[] runicAltarCatalysts = { "botania:livingrock" };
 	public static Set<String> runicAltarCatalystsSet = new HashSet<>();
-	public static String[] runicAltarRetainedItems = IntStream.rangeClosed(0, 15).mapToObj(i -> "botania:rune@" + i).toArray(String[]::new);
+	public static String[] runicAltarRetainedItems = IntStream.rangeClosed(0, 15).mapToObj(i -> "botania:rune@" + i)
+			.toArray(String[]::new);
 	public static String[] petalApothecaryCatalysts = {};
 	public static Set<String> petalApothecaryCatalystsSet = new HashSet<>();
 	public static int elfPortalSize = 2;
 	public static int runicAltarCapacity = 16;
 	public static int petalApothecaryCapacity = 16;
+	public static int breweryCapacity = 6;
 
 	private static boolean gogChecked = false;
 	public static boolean disablePetalApothecaryBucketBehavior = false;
@@ -208,7 +209,8 @@ public final class ConfigHandler {
 		enableFancySkybox = loadPropBool("fancySkybox.enable", desc, enableFancySkybox);
 
 		desc = "Set this to true to enable the fancy skybox in non Garden of Glass worlds. (Does not require Garden of Glass loaded to use, needs 'fancySkybox.enable' to be true as well)";
-		enableFancySkyboxInNormalWorlds = loadPropBool("fancySkybox.normalWorlds", desc, enableFancySkyboxInNormalWorlds);
+		enableFancySkyboxInNormalWorlds = loadPropBool("fancySkybox.normalWorlds", desc,
+				enableFancySkyboxInNormalWorlds);
 
 		desc = "The height of the mana display bar in above the XP bar. You can change this if you have a mod that changes where the XP bar is.";
 		manaBarHeight = loadPropInt("manaBar.height", desc, manaBarHeight);
@@ -234,8 +236,10 @@ public final class ConfigHandler {
 		desc = "Set this to false to disable the references in the flower tooltips. (You monster D:)";
 		referencesEnabled = loadPropBool("references.enabled", desc, referencesEnabled);
 
-//		desc = "Set this to false to disable checking and alerting when new Botania versions come out. (keywords for noobs: update notification message)";
-//		versionCheckEnabled = loadPropBool("versionChecking.enabled", desc, versionCheckEnabled);
+		// desc = "Set this to false to disable checking and alerting when new Botania
+		// versions come out. (keywords for noobs: update notification message)";
+		// versionCheckEnabled = loadPropBool("versionChecking.enabled", desc,
+		// versionCheckEnabled);
 
 		desc = "Do not ever touch this value if not asked to. Possible symptoms of doing so include your head turning backwards, the appearance of Titans near the walls or you being trapped in a game of Sword Art Online.";
 		spreaderPositionShift = loadPropInt("spreader.posShift", desc, spreaderPositionShift);
@@ -315,7 +319,7 @@ public final class ConfigHandler {
 		desc = "The items that can be used as the catalyst for Runic Altar. These items must not be in any Runic Altar recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). Default is botania:livingrock.";
 		runicAltarCatalysts = loadPropStringList("ceu.runicAltarCatalysts", desc, runicAltarCatalysts);
 		runicAltarCatalystsSet.clear();
-        runicAltarCatalystsSet.addAll(Arrays.asList(runicAltarCatalysts));
+		runicAltarCatalystsSet.addAll(Arrays.asList(runicAltarCatalysts));
 
 		desc = "The items that should be retained after the Runic Altar finishes a craft. By default, includes all of Botania's runes.";
 		runicAltarRetainedItems = loadPropStringList("ceu.runicAltarRetainedItems", desc, runicAltarRetainedItems);
@@ -334,8 +338,12 @@ public final class ConfigHandler {
 		desc = "The maximum number of inputs Runic Altar can process at the same time. Defaults to 16. Warning: changing this can have unexpected effects on existing worlds.";
 		runicAltarCapacity = loadPropInt("ceu.runicAltarCapacity", desc, runicAltarCapacity);
 
+		desc = "The maximum number of inputs Botanical Brewery can process at the same time. Does not count the bottle. Defaults to 6. Warning: changing this in any way will empty the Botanical Breweries in existing worlds.";
+		breweryCapacity = loadPropInt("ceu.breweryCapacity", desc, breweryCapacity);
+
 		desc = "Should Petal Apothecary be NOT clickable with a bucket? Part of Garden of Glass.";
-		disablePetalApothecaryBucketBehavior = loadPropBool("ceu.gog.disablePetalApothecaryBucketBehavior", desc, disablePetalApothecaryBucketBehavior);
+		disablePetalApothecaryBucketBehavior = loadPropBool("ceu.gog.disablePetalApothecaryBucketBehavior", desc,
+				disablePetalApothecaryBucketBehavior);
 
 		desc = "Should resources from Garden of Glass, like Pebbles, be enabled? This controls the existence of items themselves.";
 		registerGogResources = loadPropBool("ceu.gog.registerGogResources", desc, registerGogResources);
@@ -363,16 +371,18 @@ public final class ConfigHandler {
 
 		checkGogSettings();
 
-		if(config.hasChanged())
+		if (config.hasChanged())
 			config.save();
 	}
 
 	private static void checkGogSettings() {
 		if (obtainablePebbles && !registerGogResources) {
-			throw new IllegalArgumentException("If obtainablePebbles is enabled, registerGogResources must also be enabled!");
+			throw new IllegalArgumentException(
+					"If obtainablePebbles is enabled, registerGogResources must also be enabled!");
 		}
 		if (obtainableWaterBowl && !registerGogResources) {
-			throw new IllegalArgumentException("If obtainableWaterBowl is enabled, registerGogResources must also be enabled!");
+			throw new IllegalArgumentException(
+					"If obtainableWaterBowl is enabled, registerGogResources must also be enabled!");
 		}
 	}
 
@@ -384,7 +394,7 @@ public final class ConfigHandler {
 	}
 
 	public static void loadPostInit() {
-		if(enableShedding)
+		if (enableShedding)
 			SheddingHandler.loadFromConfig(config);
 
 		if (runicAltarCatalystsSet.isEmpty())
@@ -396,7 +406,7 @@ public final class ConfigHandler {
 		for (String s : petalApothecaryCatalysts)
 			checkItemID("Petal Apothecary Catalyst", s);
 
-		if(config.hasChanged())
+		if (config.hasChanged())
 			config.save();
 	}
 
@@ -404,7 +414,7 @@ public final class ConfigHandler {
 		Property prop = config.get(Configuration.CATEGORY_GENERAL, propName, default_);
 		prop.setComment(desc);
 
-		if(adaptor != null)
+		if (adaptor != null)
 			adaptor.adaptPropertyInt(prop, prop.getInt(default_));
 
 		return prop.getInt(default_);
@@ -414,7 +424,7 @@ public final class ConfigHandler {
 		Property prop = config.get(Configuration.CATEGORY_GENERAL, propName, default_);
 		prop.setComment(desc);
 
-		if(adaptor != null)
+		if (adaptor != null)
 			adaptor.adaptPropertyDouble(prop, prop.getDouble(default_));
 
 		return prop.getDouble(default_);
@@ -424,7 +434,7 @@ public final class ConfigHandler {
 		Property prop = config.get(Configuration.CATEGORY_GENERAL, propName, default_);
 		prop.setComment(desc);
 
-		if(adaptor != null)
+		if (adaptor != null)
 			adaptor.adaptPropertyBool(prop, prop.getBoolean(default_));
 
 		return prop.getBoolean(default_);
@@ -434,7 +444,8 @@ public final class ConfigHandler {
 		Property prop = config.get(Configuration.CATEGORY_GENERAL, propName, default_);
 		prop.setComment(desc);
 
-		// we don't need an adaptor because it's only needed to parse numbers as booleans/doubles
+		// we don't need an adaptor because it's only needed to parse numbers as
+		// booleans/doubles
 		return prop.getString();
 	}
 
@@ -442,7 +453,8 @@ public final class ConfigHandler {
 		Property prop = config.get(Configuration.CATEGORY_GENERAL, propName, default_);
 		prop.setComment(desc);
 
-		// we don't need an adaptor because it's only needed to parse numbers as booleans/doubles
+		// we don't need an adaptor because it's only needed to parse numbers as
+		// booleans/doubles
 		return prop.getStringList();
 	}
 
@@ -462,34 +474,34 @@ public final class ConfigHandler {
 			try {
 				lastBuild = Integer.parseInt(lastVersion);
 				currentBuild = Integer.parseInt(LibMisc.BUILD);
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				this.enabled = false;
 			}
 		}
 
 		public <T> void adaptProperty(Property prop, T val) {
-			if(!enabled)
+			if (!enabled)
 				return;
 
 			String name = prop.getName();
 
-			if(!adaptableValues.containsKey(name))
+			if (!adaptableValues.containsKey(name))
 				return;
 
 			AdaptableValue<T> bestValue = null;
-			for(AdaptableValue<T> value : adaptableValues.get(name)) {
-				if(value.version >= lastBuild) // If version is newer than what we last used we don't care about it
+			for (AdaptableValue<T> value : adaptableValues.get(name)) {
+				if (value.version >= lastBuild) // If version is newer than what we last used we don't care about it
 					continue;
 
-				if(bestValue == null || value.version > bestValue.version)
+				if (bestValue == null || value.version > bestValue.version)
 					bestValue = value;
 			}
 
-			if(bestValue != null) {
+			if (bestValue != null) {
 				T expected = bestValue.value;
 				T def = (T) prop.getDefault();
 
-				if(areEqualNumbers(val, expected) && !areEqualNumbers(val, def)) {
+				if (areEqualNumbers(val, expected) && !areEqualNumbers(val, def)) {
 					prop.setValue(def.toString());
 					changes.add(" " + prop.getName() + ": " + val + " -> " + def);
 				}
@@ -497,11 +509,11 @@ public final class ConfigHandler {
 		}
 
 		public <T> void addMapping(int version, String key, T val) {
-			if(!enabled)
+			if (!enabled)
 				return;
 
 			AdaptableValue<T> adapt = new AdaptableValue<>(version, val);
-			if(!adaptableValues.containsKey(key)) {
+			if (!adaptableValues.containsKey(key)) {
 				adaptableValues.put(key, new ArrayList<>());
 			}
 
@@ -514,20 +526,23 @@ public final class ConfigHandler {
 			float v1f = ((Number) v1).floatValue();
 			float v2f;
 
-			if(v2 instanceof String)
+			if (v2 instanceof String)
 				v2f = Float.parseFloat((String) v2);
-			else v2f = ((Number) v2).floatValue();
+			else
+				v2f = ((Number) v2).floatValue();
 
 			return Math.abs(v1f - v2f) < epsilon;
 		}
 
 		public void tellChanges(EntityPlayer player) {
-			if(changes.size() == 0)
+			if (changes.size() == 0)
 				return;
 
-			player.sendMessage(new TextComponentTranslation("botaniamisc.adaptativeConfigChanges").setStyle(new Style().setColor(TextFormatting.GOLD)));
-			for(String change : changes)
-				player.sendMessage(new TextComponentString(change).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
+			player.sendMessage(new TextComponentTranslation("botaniamisc.adaptativeConfigChanges")
+					.setStyle(new Style().setColor(TextFormatting.GOLD)));
+			for (String change : changes)
+				player.sendMessage(
+						new TextComponentString(change).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
 		}
 
 		public void addMappingInt(int version, String key, int val) {
@@ -575,7 +590,7 @@ public final class ConfigHandler {
 
 		@SubscribeEvent
 		public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-			if(eventArgs.getModID().equals(LibMisc.MOD_ID))
+			if (eventArgs.getModID().equals(LibMisc.MOD_ID))
 				load();
 		}
 

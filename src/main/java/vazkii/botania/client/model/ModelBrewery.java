@@ -15,6 +15,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import vazkii.botania.client.render.tile.RenderTileBrewery;
 import vazkii.botania.common.block.tile.TileBrewery;
+import vazkii.botania.common.core.handler.ConfigHandler;
 
 import javax.annotation.Nullable;
 
@@ -52,7 +53,7 @@ public class ModelBrewery extends ModelBase {
 
         float offset = (float) Math.sin(time / 40) * 0.1F + 0.05F;
         boolean hasTile = brewery != null;
-        int plates = hasTile ? brewery.getSizeInventory() - 1 : 7;
+        int plates = hasTile ? brewery.getSizeInventory() - 1 : ConfigHandler.breweryCapacity;
         float deg = (float) time / 16F;
         float polerot = -deg * 25F;
 
