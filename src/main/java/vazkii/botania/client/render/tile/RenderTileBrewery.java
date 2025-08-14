@@ -10,17 +10,21 @@
  */
 package vazkii.botania.client.render.tile;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.lib.LibResources;
 import vazkii.botania.client.model.ModelBrewery;
+import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.tile.TileBrewery;
+import vazkii.botania.common.item.ModItems;
 
 import javax.annotation.Nullable;
 
@@ -28,11 +32,10 @@ public class RenderTileBrewery extends TileEntitySpecialRenderer<TileBrewery> {
 
 	private static final ResourceLocation texture = new ResourceLocation(LibResources.MODEL_BREWERY);
 	final ModelBrewery model = new ModelBrewery();
-	public TileBrewery brewery;
 
 	@Override
-	public void render(@Nullable TileBrewery brewery, double d0, double d1, double d2, float f, int digProgress, float unused) {
-		this.brewery = brewery;
+	public void render(@Nullable TileBrewery brewery, double d0, double d1, double d2, float f, int digProgress,
+			float unused) {
 		GlStateManager.pushMatrix();
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.color(1F, 1F, 1F, 1F);
@@ -44,18 +47,18 @@ public class RenderTileBrewery extends TileEntitySpecialRenderer<TileBrewery> {
 
 		double time = ClientTickHandler.ticksInGame + f;
 
-		model.render(this, time);
+		model.render(this, brewery, time);
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.popMatrix();
 	}
 
 	public void renderItemStack(ItemStack stack) {
-		if(!stack.isEmpty()) {
+		if (!stack.isEmpty()) {
 			Minecraft mc = Minecraft.getMinecraft();
 			GlStateManager.pushMatrix();
 			mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-			float s = 0.25F;
+			float s = Block.getBlockFromItem(stack.getItem()) == ModBlocks.brewery ? 0.45F : 0.25F;
 			GlStateManager.scale(s, s, s);
 			mc.getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.GROUND);
 			GlStateManager.scale(1F / s, 1F / s, 1F / s);
