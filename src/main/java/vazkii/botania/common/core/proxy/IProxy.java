@@ -64,21 +64,26 @@ public interface IProxy {
 		wispFX(x, y, z, r, g, b, size, gravity, 1F);
 	}
 
-	default void wispFX(double x, double y, double z, float r, float g, float b, float size, float gravity, float maxAgeMul) {
+	default void wispFX(double x, double y, double z, float r, float g, float b, float size, float gravity,
+			float maxAgeMul) {
 		wispFX(x, y, z, r, g, b, size, 0, -gravity, 0, maxAgeMul);
 	}
 
-	default void wispFX(double x, double y, double z, float r, float g, float b, float size, float motionx, float motiony, float motionz) {
+	default void wispFX(double x, double y, double z, float r, float g, float b, float size, float motionx,
+			float motiony, float motionz) {
 		wispFX(x, y, z, r, g, b, size, motionx, motiony, motionz, 1F);
 	}
 
-	void wispFX(double x, double y, double z, float r, float g, float b, float size, float motionx, float motiony, float motionz, float maxAgeMul);
+	void wispFX(double x, double y, double z, float r, float g, float b, float size, float motionx, float motiony,
+			float motionz, float maxAgeMul);
 
-	default void lightningFX(Vector3 vectorStart, Vector3 vectorEnd, float ticksPerMeter, int colorOuter, int colorInner) {
+	default void lightningFX(Vector3 vectorStart, Vector3 vectorEnd, float ticksPerMeter, int colorOuter,
+			int colorInner) {
 		lightningFX(vectorStart, vectorEnd, ticksPerMeter, System.nanoTime(), colorOuter, colorInner);
 	}
 
-	void lightningFX(Vector3 vectorStart, Vector3 vectorEnd, float ticksPerMeter, long seed, int colorOuter, int colorInner);
+	void lightningFX(Vector3 vectorStart, Vector3 vectorEnd, float ticksPerMeter, long seed, int colorOuter,
+			int colorInner);
 
 	void addBoss(IBotaniaBoss boss);
 

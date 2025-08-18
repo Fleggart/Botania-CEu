@@ -28,7 +28,8 @@ import vazkii.botania.common.lib.LibMisc;
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = LibMisc.MOD_ID)
 public final class VersionChecker {
 
-	private VersionChecker() {}
+	private VersionChecker() {
+	}
 
 	private static final int FLAVOUR_MESSAGES = 65;
 
@@ -45,16 +46,21 @@ public final class VersionChecker {
 
 	@SubscribeEvent
 	public static void onTick(ClientTickEvent event) {
-		if(event.phase == Phase.END && Minecraft.getMinecraft().player != null && !triedToWarnPlayer && doneChecking) {
-			if(!onlineVersion.isEmpty()) {
+		if (event.phase == Phase.END && Minecraft.getMinecraft().player != null && !triedToWarnPlayer && doneChecking) {
+			if (!onlineVersion.isEmpty()) {
 				EntityPlayer player = Minecraft.getMinecraft().player;
 				int onlineBuild = Integer.parseInt(onlineVersion.split("-")[1]);
-				int clientBuild = LibMisc.BUILD.contains("GRADLE") ? Integer.MAX_VALUE : Integer.parseInt(LibMisc.BUILD);
-				if(onlineBuild > clientBuild) {
-					player.sendMessage(new TextComponentTranslation("botania.versioning.flavour" + player.world.rand.nextInt(FLAVOUR_MESSAGES)).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
-					player.sendMessage(new TextComponentTranslation("botania.versioning.outdated", clientBuild, onlineBuild));
+				int clientBuild = LibMisc.getBuild();
+				if (onlineBuild > clientBuild) {
+					player.sendMessage(new TextComponentTranslation(
+							"botania.versioning.flavour" + player.world.rand.nextInt(FLAVOUR_MESSAGES))
+							.setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
+					player.sendMessage(
+							new TextComponentTranslation("botania.versioning.outdated", clientBuild, onlineBuild));
 
-					ITextComponent component = ITextComponent.Serializer.fromJsonLenient(I18n.translateToLocal("botania.versioning.updateMessage").replaceAll("%version%", onlineVersion));
+					ITextComponent component = ITextComponent.Serializer
+							.fromJsonLenient(I18n.translateToLocal("botania.versioning.updateMessage")
+									.replaceAll("%version%", onlineVersion));
 					player.sendMessage(component);
 				}
 			}

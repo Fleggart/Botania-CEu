@@ -28,22 +28,28 @@ import vazkii.botania.common.lib.LibMisc;
 public class ServerProxy implements IProxy {
 
 	@Override
-	public void preInit(FMLPreInitializationEvent event) {}
+	public void preInit(FMLPreInitializationEvent event) {
+	}
 
 	@Override
-	public void init(FMLInitializationEvent event) {}
+	public void init(FMLInitializationEvent event) {
+	}
 
 	@Override
-	public void postInit(FMLPostInitializationEvent event) {}
+	public void postInit(FMLPostInitializationEvent event) {
+	}
 
 	@Override
-	public void setEntryToOpen(LexiconEntry entry) {}
+	public void setEntryToOpen(LexiconEntry entry) {
+	}
 
 	@Override
-	public void setToTutorialIfFirstLaunch() {}
+	public void setToTutorialIfFirstLaunch() {
+	}
 
 	@Override
-	public void setLexiconStack(ItemStack stack) {}
+	public void setLexiconStack(ItemStack stack) {
+	}
 
 	@Override
 	public boolean isTheClientPlayer(EntityLivingBase entity) {
@@ -71,10 +77,12 @@ public class ServerProxy implements IProxy {
 	}
 
 	@Override
-	public void setMultiblock(World world, int x, int y, int z, double radius, Block block) {}
+	public void setMultiblock(World world, int x, int y, int z, double radius, Block block) {
+	}
 
 	@Override
-	public void removeSextantMultiblock() {}
+	public void removeSextantMultiblock() {
+	}
 
 	@Override
 	public long getWorldElapsedTicks() {
@@ -82,31 +90,42 @@ public class ServerProxy implements IProxy {
 	}
 
 	@Override
-	public void setSparkleFXNoClip(boolean noclip) {}
+	public void setSparkleFXNoClip(boolean noclip) {
+	}
 
 	@Override
-	public void setSparkleFXCorrupt(boolean corrupt) {}
+	public void setSparkleFXCorrupt(boolean corrupt) {
+	}
 
 	@Override
-	public void sparkleFX(double x, double y, double z, float r, float g, float b, float size, int m, boolean fake) {}
+	public void sparkleFX(double x, double y, double z, float r, float g, float b, float size, int m, boolean fake) {
+	}
 
 	@Override
-	public void setWispFXDistanceLimit(boolean limit) {}
+	public void setWispFXDistanceLimit(boolean limit) {
+	}
 
 	@Override
-	public void setWispFXDepthTest(boolean depth) {}
+	public void setWispFXDepthTest(boolean depth) {
+	}
 
 	@Override
-	public void wispFX(double x, double y, double z, float r, float g, float b, float size, float motionx, float motiony, float motionz, float maxAgeMul) {}
+	public void wispFX(double x, double y, double z, float r, float g, float b, float size, float motionx,
+			float motiony, float motionz, float maxAgeMul) {
+	}
 
 	@Override
-	public void lightningFX(Vector3 vectorStart, Vector3 vectorEnd, float ticksPerMeter, long seed, int colorOuter, int colorInner) {}
+	public void lightningFX(Vector3 vectorStart, Vector3 vectorEnd, float ticksPerMeter, long seed, int colorOuter,
+			int colorInner) {
+	}
 
 	@Override
-	public void addBoss(IBotaniaBoss boss) {}
+	public void addBoss(IBotaniaBoss boss) {
+	}
 
 	@Override
-	public void removeBoss(IBotaniaBoss boss) {}
+	public void removeBoss(IBotaniaBoss boss) {
+	}
 
 	@Override
 	public int getClientRenderDistance() {

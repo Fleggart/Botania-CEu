@@ -39,4 +39,15 @@ public final class LibMisc {
 
 	public static final int PASSIVE_FLOWER_DECAY = 72000;
 
+	public static int parseDigitsOf(String s) {
+		String digits = s.replaceAll("\\D", "");
+		if (digits.isEmpty())
+			return Integer.MAX_VALUE;
+		return Integer.parseInt(digits);
+	}
+
+	public static int getBuild() {
+		return parseDigitsOf(BUILD);
+	}
+
 }

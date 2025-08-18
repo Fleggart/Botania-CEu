@@ -462,7 +462,6 @@ public final class ConfigHandler {
 
 		private boolean enabled;
 		private int lastBuild;
-		private int currentBuild;
 
 		private final Map<String, List<AdaptableValue>> adaptableValues = new HashMap<>();
 		private final List<String> changes = new ArrayList<>();
@@ -470,13 +469,7 @@ public final class ConfigHandler {
 		public ConfigAdaptor(boolean enabled) {
 			this.enabled = enabled;
 
-			String lastVersion = Botania.proxy.getLastVersion();
-			try {
-				lastBuild = Integer.parseInt(lastVersion);
-				currentBuild = Integer.parseInt(LibMisc.BUILD);
-			} catch (NumberFormatException e) {
-				this.enabled = false;
-			}
+			lastBuild = LibMisc.parseDigitsOf(Botania.proxy.getLastVersion());
 		}
 
 		public <T> void adaptProperty(Property prop, T val) {
