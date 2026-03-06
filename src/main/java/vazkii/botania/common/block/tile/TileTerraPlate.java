@@ -10,17 +10,29 @@
  */
 package vazkii.botania.common.block.tile;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Predicates;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirectional;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.internal.VanillaPacketDispatcher;
 import vazkii.botania.api.lexicon.multiblock.Multiblock;
 import vazkii.botania.api.lexicon.multiblock.MultiblockSet;
@@ -28,29 +40,27 @@ import vazkii.botania.api.mana.IManaPool;
 import vazkii.botania.api.mana.spark.ISparkAttachable;
 import vazkii.botania.api.mana.spark.ISparkEntity;
 import vazkii.botania.api.mana.spark.SparkHelper;
+import vazkii.botania.api.recipe.RecipeTerrestrialAgglomeration;
+import vazkii.botania.api.state.BotaniaStateProps;
 import vazkii.botania.common.block.ModBlocks;
-import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.core.handler.ModSounds;
-import vazkii.botania.common.item.ModItems;
 import vazkii.botania.common.network.PacketBotaniaEffect;
 import vazkii.botania.common.network.PacketHandler;
 
-import java.util.List;
-
 public class TileTerraPlate extends TileMod implements ISparkAttachable, ITickable {
 
-	public static final int MAX_MANA = TilePool.MAX_MANA / 2;
-
-	private static final BlockPos[] LAPIS_BLOCKS = {
+	private static final BlockPos[] SIDE_BLOCKS = {
 			new BlockPos(1, 0, 0), new BlockPos(-1, 0, 0),
 			new BlockPos(0, 0, 1), new BlockPos(0, 0, -1)
 	};
 
-	private static final BlockPos[] LIVINGROCK_BLOCKS = {
-			new BlockPos(0, 0, 0), new BlockPos(1, 0, 1),
+	private static final BlockPos[] CORNER_BLOCKS = {
+			new BlockPos(1, 0, 1),
 			new BlockPos(1, 0, -1), new BlockPos(-1, 0, 1),
 			new BlockPos(-1, 0, -1)
 	};
+
+	private static final BlockPos[] CENTER_BLOCKS = { new BlockPos(0, 0, 0) };
 
 	private static final String TAG_MANA = "mana";
 
@@ -59,9 +69,11 @@ public class TileTerraPlate extends TileMod implements ISparkAttachable, ITickab
 	public static MultiblockSet makeMultiblockSet() {
 		Multiblock mb = new Multiblock();
 
-		for(BlockPos relativePos : LAPIS_BLOCKS)
+		for (BlockPos relativePos : SIDE_BLOCKS)
 			mb.addComponent(relativePos, Blocks.LAPIS_BLOCK.getDefaultState());
-		for(BlockPos relativePos : LIVINGROCK_BLOCKS)
+		for (BlockPos relativePos : CORNER_BLOCKS)
+			mb.addComponent(relativePos, ModBlocks.livingrock.getDefaultState());
+		for (BlockPos relativePos : CENTER_BLOCKS)
 			mb.addComponent(relativePos, ModBlocks.livingrock.getDefaultState());
 
 		mb.addComponent(new BlockPos(0, 1, 0), ModBlocks.terraPlate.getDefaultState());
@@ -72,47 +84,53 @@ public class TileTerraPlate extends TileMod implements ISparkAttachable, ITickab
 
 	@Override
 	public void update() {
-		if(world.isRemote)
+		if (world.isRemote)
 			return;
 
 		boolean removeMana = true;
 
-		if(hasValidPlatform()) {
-			List<EntityItem> items = getItems();
-			if(areItemsValid(items)) {
-				removeMana = false;
-				ISparkEntity spark = getAttachedSpark();
-				if(spark != null) {
-					List<ISparkEntity> sparkEntities = SparkHelper.getSparksAround(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-					for(ISparkEntity otherSpark : sparkEntities) {
-						if(spark == otherSpark)
-							continue;
+		List<EntityItem> items = getItems();
+		RecipeTerrestrialAgglomeration recipe = findRecipe(items);
+		if (recipe != null) {
+			removeMana = false;
+			ISparkEntity spark = getAttachedSpark();
+			if (spark != null) {
+				List<ISparkEntity> sparkEntities = SparkHelper.getSparksAround(world, pos.getX() + 0.5,
+						pos.getY() + 0.5, pos.getZ() + 0.5);
+				for (ISparkEntity otherSpark : sparkEntities) {
+					if (spark == otherSpark)
+						continue;
 
-						if(otherSpark.getAttachedTile() != null && otherSpark.getAttachedTile() instanceof IManaPool)
-							otherSpark.registerTransfer(spark);
-					}
+					if (otherSpark.getAttachedTile() != null && otherSpark.getAttachedTile() instanceof IManaPool)
+						otherSpark.registerTransfer(spark);
 				}
-				if(mana > 0) {
-					VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
-					PacketHandler.sendToNearby(world, getPos(),
-						new PacketBotaniaEffect(PacketBotaniaEffect.EffectType.TERRA_PLATE, getPos().getX(), getPos().getY(), getPos().getZ()));
-				}
+			}
+			if (mana > 0) {
+				float progress = ((float) mana) / recipe.getManaCost();
+				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
+				PacketHandler.sendToNearby(world, getPos(),
+						new PacketBotaniaEffect(PacketBotaniaEffect.EffectType.TERRA_PLATE,
+								getPos().getX(), getPos().getY(), getPos().getZ(),
+								recipe.color1, recipe.color2, (int) progress * 100));
+			}
 
-				if(mana >= MAX_MANA) {
-					EntityItem item = items.get(0);
-					for(EntityItem otherItem : items)
-						if(otherItem != item)
-							otherItem.setDead();
-						else item.setItem(new ItemStack(ModItems.manaResource, 1, 4));
-					world.playSound(null, item.posX, item.posY, item.posZ, ModSounds.terrasteelCraft, SoundCategory.BLOCKS, 1, 1);
-					mana = 0;
-					world.updateComparatorOutputLevel(pos, world.getBlockState(pos).getBlock());
-					VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
-				}
+			if (mana >= recipe.manaCost) {
+				EntityItem item = items.get(0);
+				for (EntityItem otherItem : items)
+					if (otherItem != item)
+						otherItem.setDead();
+					else
+						item.setItem(recipe.getRecipeOutputCopy());
+				world.playSound(null, item.posX, item.posY, item.posZ, ModSounds.terrasteelCraft,
+						SoundCategory.BLOCKS, 1, 1);
+				mana = 0;
+				replacePlatform(recipe);
+				world.updateComparatorOutputLevel(pos, world.getBlockState(pos).getBlock());
+				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
 			}
 		}
 
-		if(removeMana)
+		if (removeMana)
 			recieveMana(-1000);
 	}
 
@@ -120,46 +138,79 @@ public class TileTerraPlate extends TileMod implements ISparkAttachable, ITickab
 		return world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)));
 	}
 
-	boolean areItemsValid(List<EntityItem> items) {
-		if(items.size() != 3)
-			return false;
+	boolean hasValidPlatform(RecipeTerrestrialAgglomeration recipe) {
+		return checkAll(CENTER_BLOCKS, recipe.multiblockCenter)
+				&& checkAll(SIDE_BLOCKS, recipe.multiblockEdge)
+				&& checkAll(CORNER_BLOCKS, recipe.multiblockCorner);
+	}
 
-		ItemStack ingot = ItemStack.EMPTY;
-		ItemStack pearl = ItemStack.EMPTY;
-		ItemStack diamond = ItemStack.EMPTY;
-		for(EntityItem item : items) {
-			ItemStack stack = item.getItem();
-			if(stack.getItem() != ModItems.manaResource || stack.getCount() != 1)
-				return false;
-
-			int meta = stack.getItemDamage();
-			if(meta == 0)
-				ingot = stack;
-			else if(meta == 1)
-				pearl = stack;
-			else if(meta == 2)
-				diamond = stack;
-			else return false;
+	void replacePlatform(RecipeTerrestrialAgglomeration recipe) {
+		for (BlockPos delta : CENTER_BLOCKS) {
+			replaceBlock(delta, recipe.multiblockCenterReplace);
 		}
-
-		return !ingot.isEmpty() && !pearl.isEmpty() && !diamond.isEmpty();
+		for (BlockPos delta : SIDE_BLOCKS) {
+			replaceBlock(delta, recipe.multiblockEdgeReplace);
+		}
+		for (BlockPos delta : CORNER_BLOCKS) {
+			replaceBlock(delta, recipe.multiblockCornerReplace);
+		}
 	}
 
-	boolean hasValidPlatform() {
-		return checkAll(LAPIS_BLOCKS, Blocks.LAPIS_BLOCK) && checkAll(LIVINGROCK_BLOCKS, ModBlocks.livingrock);
-	}
-
-	boolean checkAll(BlockPos[] relPositions, Block block) {
+	boolean checkAll(BlockPos[] relPositions, IBlockState block) {
 		for (BlockPos position : relPositions) {
-			if(!checkPlatform(position.getX(), position.getZ(), block))
+			if (!checkPlatform(position.getX(), position.getZ(), block))
 				return false;
 		}
 
 		return true;
 	}
 
-	boolean checkPlatform(int xOff, int zOff, Block block) {
-		return world.getBlockState(pos.add(xOff, -1, zOff)).getBlock() == block;
+	private boolean areStatesSimilar(IBlockState a, IBlockState b) {
+		if (a.getBlock() != b.getBlock())
+			return false;
+		else
+			return equalizeDirectionProperties(a).equals(equalizeDirectionProperties(b));
+	}
+
+	@SuppressWarnings("unchecked")
+	private IBlockState equalizeDirectionProperties(IBlockState state) {
+		Collection<IProperty<?>> props = state.getPropertyKeys();
+		if (props.contains(BlockDirectional.FACING))
+			return state.withProperty(BlockDirectional.FACING, EnumFacing.NORTH);
+		if (props.contains(BotaniaStateProps.FACING))
+			return state.withProperty(BotaniaStateProps.FACING, EnumFacing.NORTH);
+
+		for (IProperty<?> prop : props) {
+			if (prop.getValueClass() != EnumFacing.class)
+				continue;
+			if (!prop.getAllowedValues().contains(EnumFacing.NORTH))
+				continue;
+			state = state.withProperty((IProperty<EnumFacing>) prop, EnumFacing.NORTH);
+		}
+
+		return state;
+	}
+
+	boolean checkPlatform(int xOff, int zOff, IBlockState block) {
+		return areStatesSimilar(world.getBlockState(pos.add(xOff, -1, zOff)), block);
+	}
+
+	void replaceBlock(BlockPos delta, @Nullable IBlockState target) {
+		if (target != null) {
+			BlockPos targetPos = pos.add(delta).add(0, -1, 0);
+			world.playEvent(2001, targetPos, Block.getStateId(world.getBlockState(pos)));
+			world.setBlockState(targetPos, target, 3);
+		}
+	}
+
+	RecipeTerrestrialAgglomeration findRecipe(List<EntityItem> items) {
+		for (RecipeTerrestrialAgglomeration r : BotaniaAPI.terraPlateRecipes) {
+			if (r.itemsMatch(items.stream().map(x -> x.getItem()).collect(Collectors.toList()))
+					&& hasValidPlatform(r)) {
+				return r;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -177,20 +228,25 @@ public class TileTerraPlate extends TileMod implements ISparkAttachable, ITickab
 		return mana;
 	}
 
+	public int getManaCost() {
+		RecipeTerrestrialAgglomeration recipe = findRecipe(getItems());
+		return recipe == null ? 0 : recipe.getManaCost();
+	}
+
 	@Override
 	public boolean isFull() {
-		return mana >= MAX_MANA;
+		return mana >= getManaCost();
 	}
 
 	@Override
 	public void recieveMana(int mana) {
-		this.mana = Math.max(0, Math.min(MAX_MANA, this.mana + mana));
+		this.mana = Math.max(0, Math.min(getManaCost(), this.mana + mana));
 		world.updateComparatorOutputLevel(pos, world.getBlockState(pos).getBlock());
 	}
 
 	@Override
 	public boolean canRecieveManaFromBursts() {
-		return areItemsValid(getItems());
+		return findRecipe(getItems()) != null;
 	}
 
 	@Override
@@ -199,12 +255,14 @@ public class TileTerraPlate extends TileMod implements ISparkAttachable, ITickab
 	}
 
 	@Override
-	public void attachSpark(ISparkEntity entity) {}
+	public void attachSpark(ISparkEntity entity) {
+	}
 
 	@Override
 	public ISparkEntity getAttachedSpark() {
-		List<Entity> sparks = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.up(), pos.up().add(1, 1, 1)), Predicates.instanceOf(ISparkEntity.class));
-		if(sparks.size() == 1) {
+		List<Entity> sparks = world.getEntitiesWithinAABB(Entity.class,
+				new AxisAlignedBB(pos.up(), pos.up().add(1, 1, 1)), Predicates.instanceOf(ISparkEntity.class));
+		if (sparks.size() == 1) {
 			Entity e = sparks.get(0);
 			return (ISparkEntity) e;
 		}
@@ -214,12 +272,12 @@ public class TileTerraPlate extends TileMod implements ISparkAttachable, ITickab
 
 	@Override
 	public boolean areIncomingTranfersDone() {
-		return !areItemsValid(getItems());
+		return findRecipe(getItems()) == null;
 	}
 
 	@Override
 	public int getAvailableSpaceForMana() {
-		return Math.max(0, MAX_MANA - getCurrentMana());
+		return Math.max(0, getManaCost() - getCurrentMana());
 	}
 
 }

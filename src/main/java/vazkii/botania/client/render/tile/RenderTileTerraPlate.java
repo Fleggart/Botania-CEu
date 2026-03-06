@@ -30,7 +30,7 @@ public class RenderTileTerraPlate extends TileEntitySpecialRenderer<TileTerraPla
 
 	@Override
 	public void render(@Nonnull TileTerraPlate plate, double d0, double d1, double d2, float f, int digProgress, float unused) {
-		float max = TileTerraPlate.MAX_MANA / 10F;
+		float max = 50000F;
 		float alphaMod = Math.min(max, plate.getCurrentMana()) / max;
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(d0, d1, d2);

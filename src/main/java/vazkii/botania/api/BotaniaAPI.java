@@ -13,6 +13,8 @@ package vazkii.botania.api;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.BlockColored;
@@ -47,12 +49,14 @@ import vazkii.botania.api.recipe.RecipeMiniFlower;
 import vazkii.botania.api.recipe.RecipePetals;
 import vazkii.botania.api.recipe.RecipePureDaisy;
 import vazkii.botania.api.recipe.RecipeRuneAltar;
+import vazkii.botania.api.recipe.RecipeTerrestrialAgglomeration;
 import vazkii.botania.api.subtile.SubTileEntity;
 import vazkii.botania.api.subtile.signature.BasicSignature;
 import vazkii.botania.api.subtile.signature.SubTileSignature;
 import vazkii.botania.api.wiki.IWikiProvider;
 import vazkii.botania.api.wiki.SimpleWikiProvider;
 import vazkii.botania.api.wiki.WikiHooks;
+import vazkii.botania.common.block.ModBlocks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,6 +84,7 @@ public final class BotaniaAPI {
 	public static final List<RecipeManaInfusion> manaInfusionRecipes = new ArrayList<>();
 	public static final List<RecipeRuneAltar> runeAltarRecipes = new ArrayList<>();
 	public static final List<RecipeElvenTrade> elvenTradeRecipes = new ArrayList<>();
+	public static final List<RecipeTerrestrialAgglomeration> terraPlateRecipes = new ArrayList<>();
 	public static final List<RecipeBrew> brewRecipes = new ArrayList<>();
 	public static final List<RecipeManaInfusion> miniFlowerRecipes = new ArrayList<>();
 
@@ -492,6 +497,71 @@ public final class BotaniaAPI {
 	 */
 	public static RecipeElvenTrade registerElvenTradeRecipe(ItemStack output, Object... inputs) {
 		return registerElvenTradeRecipe(new ItemStack[]{ output }, inputs);
+	}
+
+	/**
+	 * Registers a Terrestrial Agglomeration recipe (throw items on top of a T.A. Plate).
+	 * @param mana   The mana cost to perform this recipe.
+	 * @param color1 The particle color when the recipe begins, in 0xRRGGBB form.
+	 * @param color2 The particle color when the recipe ends, in 0xRRGGBB form.
+	 * @param output The ItemStack to return
+	 * @param inputs The items required, can be an ItemStack or an Ore Dictionary entry string.
+	 * @param blockStates An array of 6 block states. The first 3 are multiblock center, edge, and corner,
+	 * the last 3 are transformed. Use null to declare that the multiblock does not transform upon completion.
+	 * @return The recipe created.
+	 */
+	public static RecipeTerrestrialAgglomeration registerTerraPlateRecipe(int mana, int color1, int color2,
+			ItemStack output, Object[] inputs, IBlockState[] blockStates) {
+		if (blockStates.length != 6) {
+			throw new IllegalArgumentException(
+					"Must have 6 blockstates in agglomeration recipe. If you intend a certain block not to change, use null.");
+		}
+
+		for (int i = 0; i < 3; i++) {
+			if (blockStates[i] == null) {
+				throw new IllegalArgumentException(
+						"Null blockstates must not be present at indexes 0-2, got one at index " + i + ".");
+			}
+		}
+
+		RecipeTerrestrialAgglomeration recipe = new RecipeTerrestrialAgglomeration(ImmutableList.copyOf(inputs), output,
+				mana, color1, color2, blockStates[0], blockStates[1], blockStates[2], blockStates[3], blockStates[4],
+				blockStates[5]);
+		terraPlateRecipes.add(recipe);
+		return recipe;
+	}
+
+	/**
+	 * Registers a Terrestrial Agglomeration recipe (throw items on top of a T.A. Plate).
+	 * This uses the vanilla T.A. shape (Livingrock + Lapis) and does not transform blocks.
+	 * @param mana   The mana cost to perform this recipe.
+	 * @param color1 The particle color when the recipe begins, in 0xRRGGBB form.
+	 * @param color2 The particle color when the recipe ends, in 0xRRGGBB form.
+	 * @param output The ItemStack to return
+	 * @param inputs The items required, can be an ItemStack or an Ore Dictionary entry string.
+	 * @return The recipe created.
+	 */
+	public static RecipeTerrestrialAgglomeration registerTerraPlateRecipe(int mana, int color1, int color2,
+			ItemStack output, Object[] inputs) {
+		return registerTerraPlateRecipe(mana, color1, color2, output, inputs,
+				new IBlockState[] {
+						ModBlocks.livingrock.getDefaultState(),
+						Blocks.LAPIS_BLOCK.getDefaultState(),
+						ModBlocks.livingrock.getDefaultState(),
+						null, null, null });
+	}
+
+	/**
+	 * Registers a Terrestrial Agglomeration recipe (throw items on top of a T.A. Plate).
+	 * This uses the vanilla T.A. shape (Livingrock + Lapis) and does not transform blocks.
+	 * Also uses default Blue => Green particles.
+	 * @param mana   The mana cost to perform this recipe.
+	 * @param output The ItemStack to return
+	 * @param inputs The items required, can be an ItemStack or an Ore Dictionary entry string.
+	 * @return The recipe created.
+	 */
+	public static RecipeTerrestrialAgglomeration registerTerraPlateRecipe(int mana, ItemStack output, Object[] inputs) {
+		return registerTerraPlateRecipe(mana, 0x0000FF, 0x00FF00, output, inputs);
 	}
 
 	/**

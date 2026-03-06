@@ -10,6 +10,8 @@
  */
 package vazkii.botania.common.block.mana;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
@@ -33,11 +35,9 @@ import vazkii.botania.common.item.ModItems;
 import vazkii.botania.common.lexicon.LexiconData;
 import vazkii.botania.common.lib.LibBlockNames;
 
-import javax.annotation.Nonnull;
-
 public class BlockTerraPlate extends BlockMod implements ILexiconable {
 
-	private static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 3.0/16, 1);
+	private static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 3.0 / 16, 1);
 
 	public BlockTerraPlate() {
 		super(Material.IRON, LibBlockNames.TERRA_PLATE);
@@ -54,10 +54,11 @@ public class BlockTerraPlate extends BlockMod implements ILexiconable {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing s, float xs, float ys, float zs) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+			EnumFacing s, float xs, float ys, float zs) {
 		ItemStack stack = player.getHeldItem(hand);
-		if(!stack.isEmpty() && stack.getItem() == ModItems.manaResource && stack.getItemDamage() < 3) {
-			if(!world.isRemote) {
+		if (!stack.isEmpty() && stack.getItem() == ModItems.manaResource && stack.getItemDamage() < 3) {
+			if (!world.isRemote) {
 				ItemStack target = stack.splitStack(1);
 				EntityItem item = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, target);
 				item.setPickupDelay(40);
@@ -110,8 +111,11 @@ public class BlockTerraPlate extends BlockMod implements ILexiconable {
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
 		TileTerraPlate plate = (TileTerraPlate) world.getTileEntity(pos);
-		int val = (int) ((double) plate.getCurrentMana() / (double) TileTerraPlate.MAX_MANA * 15.0);
-		if(plate.getCurrentMana() > 0)
+		int manaCost = plate.getManaCost();
+		if (manaCost <= 0)
+			return 0;
+		int val = (int) ((double) plate.getCurrentMana() / (double) manaCost * 15.0);
+		if (plate.getCurrentMana() > 0)
 			val = Math.max(val, 1);
 
 		return val;

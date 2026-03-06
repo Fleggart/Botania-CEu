@@ -8,6 +8,15 @@
  */
 package vazkii.botania.client.integration.jei;
 
+import static vazkii.botania.common.lib.LibBlockNames.SUBTILE_ORECHID;
+import static vazkii.botania.common.lib.LibBlockNames.SUBTILE_ORECHID_IGNEM;
+import static vazkii.botania.common.lib.LibBlockNames.SUBTILE_PUREDAISY;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -31,6 +40,7 @@ import vazkii.botania.api.recipe.RecipeManaInfusion;
 import vazkii.botania.api.recipe.RecipePetals;
 import vazkii.botania.api.recipe.RecipePureDaisy;
 import vazkii.botania.api.recipe.RecipeRuneAltar;
+import vazkii.botania.api.recipe.RecipeTerrestrialAgglomeration;
 import vazkii.botania.api.state.enums.AltarVariant;
 import vazkii.botania.api.state.enums.PoolVariant;
 import vazkii.botania.client.core.handler.CorporeaInputHandler;
@@ -55,6 +65,8 @@ import vazkii.botania.client.integration.jei.puredaisy.PureDaisyRecipeCategory;
 import vazkii.botania.client.integration.jei.puredaisy.PureDaisyRecipeWrapper;
 import vazkii.botania.client.integration.jei.runicaltar.RunicAltarRecipeCategory;
 import vazkii.botania.client.integration.jei.runicaltar.RunicAltarRecipeWrapper;
+import vazkii.botania.client.integration.jei.terrestrialagglomeration.TerrestrialAgglomerationRecipeCategory;
+import vazkii.botania.client.integration.jei.terrestrialagglomeration.TerrestrialAgglomerationRecipeWrapper;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.crafting.recipe.AncientWillRecipe;
 import vazkii.botania.common.crafting.recipe.CompositeLensRecipe;
@@ -63,14 +75,6 @@ import vazkii.botania.common.crafting.recipe.TerraPickTippingRecipe;
 import vazkii.botania.common.item.ModItems;
 import vazkii.botania.common.item.block.ItemBlockSpecialFlower;
 import vazkii.botania.common.item.brew.ItemBrewBase;
-
-import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static vazkii.botania.common.lib.LibBlockNames.SUBTILE_ORECHID;
-import static vazkii.botania.common.lib.LibBlockNames.SUBTILE_ORECHID_IGNEM;
-import static vazkii.botania.common.lib.LibBlockNames.SUBTILE_PUREDAISY;
 
 @JEIPlugin
 public class JEIBotaniaPlugin implements IModPlugin {
@@ -95,7 +99,8 @@ public class JEIBotaniaPlugin implements IModPlugin {
 				new ElvenTradeRecipeCategory(registry.getJeiHelpers().getGuiHelper()),
 				new ManaPoolRecipeCategory(registry.getJeiHelpers().getGuiHelper()),
 				new OrechidRecipeCategory(registry.getJeiHelpers().getGuiHelper()),
-				new OrechidIgnemRecipeCategory(registry.getJeiHelpers().getGuiHelper())
+				new OrechidIgnemRecipeCategory(registry.getJeiHelpers().getGuiHelper()),
+				new TerrestrialAgglomerationRecipeCategory(registry.getJeiHelpers().getGuiHelper())
 		);
 	}
 
@@ -113,6 +118,7 @@ public class JEIBotaniaPlugin implements IModPlugin {
 		registry.handleRecipes(RecipePetals.class, PetalApothecaryRecipeWrapper::new, PetalApothecaryRecipeCategory.UID);
 		registry.handleRecipes(RecipeElvenTrade.class, ElvenTradeRecipeWrapper::new, ElvenTradeRecipeCategory.UID);
 		registry.handleRecipes(RecipeManaInfusion.class, ManaPoolRecipeWrapper::new, ManaPoolRecipeCategory.UID);
+		registry.handleRecipes(RecipeTerrestrialAgglomeration.class, TerrestrialAgglomerationRecipeWrapper::new, TerrestrialAgglomerationRecipeCategory.UID);
 		
 		registry.handleRecipes(SpecialFloatingFlowerRecipe.class, SpecialFloatingFlowerWrapper::new, VanillaRecipeCategoryUid.CRAFTING);
 		registry.handleRecipes(AncientWillRecipe.class, AncientWillRecipeWrapper::new, VanillaRecipeCategoryUid.CRAFTING);
@@ -125,6 +131,7 @@ public class JEIBotaniaPlugin implements IModPlugin {
 		registry.addRecipes(BotaniaAPI.elvenTradeRecipes, ElvenTradeRecipeCategory.UID);
 		registry.addRecipes(BotaniaAPI.runeAltarRecipes, RunicAltarRecipeCategory.UID);
 		registry.addRecipes(BotaniaAPI.manaInfusionRecipes, ManaPoolRecipeCategory.UID);
+		registry.addRecipes(BotaniaAPI.terraPlateRecipes, TerrestrialAgglomerationRecipeCategory.UID);
 
 		registry.addRecipes(
 				BotaniaAPI.oreWeights.entrySet().stream()
@@ -145,6 +152,7 @@ public class JEIBotaniaPlugin implements IModPlugin {
 
 		registry.addRecipeCatalyst(new ItemStack(ModBlocks.brewery), BreweryRecipeCategory.UID);
 		registry.addRecipeCatalyst(new ItemStack(ModBlocks.alfPortal), ElvenTradeRecipeCategory.UID);
+		registry.addRecipeCatalyst(new ItemStack(ModBlocks.terraPlate), TerrestrialAgglomerationRecipeCategory.UID);
 
 		for(PoolVariant v : PoolVariant.values()) {
 			registry.addRecipeCatalyst(new ItemStack(ModBlocks.pool, 1, v.ordinal()), ManaPoolRecipeCategory.UID);
