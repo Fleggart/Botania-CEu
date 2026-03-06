@@ -8,7 +8,12 @@
  */
 package vazkii.botania.client.integration.jei.manapool;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.ImmutableList;
+
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -22,9 +27,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import vazkii.botania.api.recipe.RecipeManaInfusion;
 import vazkii.botania.client.core.handler.HUDHandler;
 import vazkii.botania.common.block.tile.mana.TilePool;
-
-import javax.annotation.Nonnull;
-import java.util.List;
+import vazkii.botania.common.core.handler.ConfigHandler;
 
 public class ManaPoolRecipeWrapper implements IRecipeWrapper {
 
@@ -35,13 +38,13 @@ public class ManaPoolRecipeWrapper implements IRecipeWrapper {
 	public ManaPoolRecipeWrapper(RecipeManaInfusion recipe) {
 		ImmutableList.Builder<List<ItemStack>> builder = ImmutableList.builder();
 
-		if(recipe.getInput() instanceof ItemStack) {
+		if (recipe.getInput() instanceof ItemStack) {
 			builder.add(ImmutableList.of((ItemStack) recipe.getInput()));
-		} else if(recipe.getInput() instanceof String) {
+		} else if (recipe.getInput() instanceof String) {
 			builder.add(OreDictionary.getOres((String) recipe.getInput()));
 		}
 
-		if(recipe.getCatalyst() != null) {
+		if (recipe.getCatalyst() != null) {
 			Block block = recipe.getCatalyst().getBlock();
 			if (Item.getItemFromBlock(block) != Items.AIR) {
 				builder.add(ImmutableList.of(new ItemStack(block, 1, block.getMetaFromState(recipe.getCatalyst()))));
@@ -62,8 +65,12 @@ public class ManaPoolRecipeWrapper implements IRecipeWrapper {
 	@Override
 	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
 		GlStateManager.enableAlpha();
-		HUDHandler.renderManaBar(20, 50, 0x0000FF, 0.75F, mana, TilePool.MAX_MANA / 10);
+		HUDHandler.renderManaBar(20, 52, 0x0000FF, 0.75F, mana, TilePool.MAX_MANA / 10);
 		GlStateManager.disableAlpha();
+
+		if (ConfigHandler.showManaNumbers) {
+			minecraft.fontRenderer.drawString(Integer.toString(mana) + " mana", 21, 43, 0);
+		}
 	}
 
 	@Nonnull

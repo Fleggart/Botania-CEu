@@ -8,6 +8,12 @@
  */
 package vazkii.botania.client.integration.jei.manapool;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -23,11 +29,6 @@ import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.core.helper.ItemNBTHelper;
 import vazkii.botania.common.lib.LibMisc;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-
 public class ManaPoolRecipeCategory implements IRecipeCategory<ManaPoolRecipeWrapper> {
 
 	public static final String UID = "botania.manaPool";
@@ -37,7 +38,7 @@ public class ManaPoolRecipeCategory implements IRecipeCategory<ManaPoolRecipeWra
 	private final ItemStack renderStack = new ItemStack(ModBlocks.pool);
 
 	public ManaPoolRecipeCategory(IGuiHelper guiHelper) {
-		background = guiHelper.createBlankDrawable(142, 55);
+		background = guiHelper.createBlankDrawable(142, 57);
 		localizedName = I18n.format("botania.nei.manaPool");
 		overlay = guiHelper.createDrawable(new ResourceLocation("botania", "textures/gui/pureDaisyOverlay.png"),
 				0, 0, 64, 46);
@@ -78,7 +79,8 @@ public class ManaPoolRecipeCategory implements IRecipeCategory<ManaPoolRecipeWra
 	}
 
 	@Override
-	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ManaPoolRecipeWrapper recipeWrapper, @Nonnull IIngredients ingredients) {
+	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ManaPoolRecipeWrapper recipeWrapper,
+			@Nonnull IIngredients ingredients) {
 		int index = 0;
 
 		recipeLayout.getItemStacks().init(index, true, 32, 12);
@@ -86,7 +88,7 @@ public class ManaPoolRecipeCategory implements IRecipeCategory<ManaPoolRecipeWra
 
 		index++;
 
-		if(ingredients.getInputs(VanillaTypes.ITEM).size() > 1) {
+		if (ingredients.getInputs(VanillaTypes.ITEM).size() > 1) {
 			// Has catalyst
 			recipeLayout.getItemStacks().init(index, true, 12, 12);
 			recipeLayout.getItemStacks().set(index, ingredients.getInputs(VanillaTypes.ITEM).get(1));

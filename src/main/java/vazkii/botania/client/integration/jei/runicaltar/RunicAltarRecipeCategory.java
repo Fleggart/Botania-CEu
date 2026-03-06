@@ -39,7 +39,7 @@ public class RunicAltarRecipeCategory implements IRecipeCategory<RunicAltarRecip
 	private final IDrawable overlay;
 
 	public RunicAltarRecipeCategory(IGuiHelper guiHelper) {
-		background = guiHelper.createBlankDrawable(114, 104);
+		background = guiHelper.createBlankDrawable(114, 106);
 		localizedName = I18n.format("botania.nei.runicAltar");
 		overlay = guiHelper.createDrawable(new ResourceLocation("botania", "textures/gui/petalOverlay.png"),
 				17, 11, 114, 82);

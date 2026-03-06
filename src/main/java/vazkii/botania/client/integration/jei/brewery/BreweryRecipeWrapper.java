@@ -8,46 +8,53 @@
  */
 package vazkii.botania.client.integration.jei.brewery;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.ImmutableList;
+
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import vazkii.botania.api.recipe.RecipeBrew;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.item.ModItems;
-
-import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.List;
 
 public class BreweryRecipeWrapper implements IRecipeWrapper {
 
 	private final List<List<ItemStack>> input;
 	private final List<ItemStack> output;
+	private final RecipeBrew brew;
 
 	private static final List<ItemStack> inputs = Arrays.asList(new ItemStack(ModItems.vial),
-		new ItemStack(ModItems.vial, 1, 1), new ItemStack(ModItems.incenseStick), new ItemStack(ModItems.bloodPendant));
+			new ItemStack(ModItems.vial, 1, 1), new ItemStack(ModItems.incenseStick),
+			new ItemStack(ModItems.bloodPendant));
 
 	public BreweryRecipeWrapper(RecipeBrew recipeBrew) {
+		brew = recipeBrew;
 		ImmutableList.Builder<List<ItemStack>> inputBuilder = ImmutableList.builder();
 		ImmutableList.Builder<ItemStack> outputBuilder = ImmutableList.builder();
 		ImmutableList.Builder<ItemStack> containers = ImmutableList.builder();
 
-		for(ItemStack stack : inputs) {
+		for (ItemStack stack : inputs) {
 			ItemStack brewed = recipeBrew.getOutput(stack);
-			if(!brewed.isEmpty()) {
+			if (!brewed.isEmpty()) {
 				containers.add(stack);
 				outputBuilder.add(brewed);
 			}
 		}
 		inputBuilder.add(containers.build());
 
-		for(Object o : recipeBrew.getInputs()) {
-			if(o instanceof ItemStack) {
+		for (Object o : recipeBrew.getInputs()) {
+			if (o instanceof ItemStack) {
 				inputBuilder.add(ImmutableList.of((ItemStack) o));
 			}
-			if(o instanceof String) {
+			if (o instanceof String) {
 				inputBuilder.add(OreDictionary.getOres((String) o));
 			}
 		}
@@ -61,4 +68,12 @@ public class BreweryRecipeWrapper implements IRecipeWrapper {
 		ingredients.setInputLists(VanillaTypes.ITEM, input);
 		ingredients.setOutputLists(VanillaTypes.ITEM, ImmutableList.of(output));
 	}
+
+	@Override
+	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+		if (ConfigHandler.showManaNumbers) {
+			minecraft.fontRenderer.drawString(Integer.toString(brew.getManaUsage()) + " mana", 80, 44, 0);
+		}
+	}
+
 }

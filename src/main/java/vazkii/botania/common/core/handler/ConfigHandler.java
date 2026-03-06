@@ -114,6 +114,7 @@ public final class ConfigHandler {
 	public static int petalApothecaryCapacity = 16;
 	public static int breweryCapacity = 6;
 	public static boolean addCatalystsToJEI = true;
+	public static boolean showManaNumbers = false;
 
 	private static boolean gogChecked = false;
 	public static boolean disablePetalApothecaryBucketBehavior = false;
@@ -350,6 +351,9 @@ public final class ConfigHandler {
 
 		desc = "Should Runic Altar and Petal Apothecary catalysts be displayed in JEI?";
 		addCatalystsToJEI = loadPropBool("ceu.jeiCatalysts", desc, addCatalystsToJEI);
+
+		desc = "Should recipes show all the numbers in JEI? Breaks Botania's immmersion.";
+		showManaNumbers = loadPropBool("ceu.showManaNumbers", desc, showManaNumbers);
 
 		desc = "Should Petal Apothecary be NOT clickable with a bucket? Part of Garden of Glass.";
 		disablePetalApothecaryBucketBehavior = loadPropBool("ceu.gog.disablePetalApothecaryBucketBehavior", desc,
