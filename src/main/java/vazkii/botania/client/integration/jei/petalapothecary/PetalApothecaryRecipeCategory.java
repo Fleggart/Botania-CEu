@@ -8,6 +8,12 @@
  */
 package vazkii.botania.client.integration.jei.petalapothecary;
 
+import java.awt.Point;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IDrawableStatic;
@@ -15,20 +21,16 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import vazkii.botania.common.block.ModBlocks;
+import vazkii.botania.common.core.handler.ConfigHandler;
+import vazkii.botania.common.core.helper.InventoryHelper;
 import vazkii.botania.common.lib.LibMisc;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApothecaryRecipeWrapper> {
 
@@ -72,15 +74,33 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 	}
 
 	@Override
-	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull PetalApothecaryRecipeWrapper recipeWrapper, @Nonnull IIngredients ingredients) {
-		recipeLayout.getItemStacks().init(0, true, 47, 44);
-		recipeLayout.getItemStacks().set(0, new ItemStack(ModBlocks.altar));
+	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull PetalApothecaryRecipeWrapper recipeWrapper,
+			@Nonnull IIngredients ingredients) {
 
 		int index = 1;
+		if (ConfigHandler.addCatalystsToJEI) {
+			index += 2;
+			recipeLayout.getItemStacks().init(0, true, 47, 49);
+			recipeLayout.getItemStacks().init(1, true, 39, 33);
+			recipeLayout.getItemStacks().init(2, true, 55, 33);
+			// We know there's no nulls because config checks it on load.
+			List<ItemStack> petalCatalysts = ConfigHandler.petalApothecaryCatalystsSet.stream()
+					.map(InventoryHelper::destringifyStack).collect(Collectors.toList());
+			if (petalCatalysts.isEmpty()) {
+				// Not 100% correct, but whatever
+				petalCatalysts.add(new ItemStack(Items.WHEAT_SEEDS));
+			}
+			recipeLayout.getItemStacks().set(1, petalCatalysts);
+			recipeLayout.getItemStacks().set(2, new ItemStack(Items.WATER_BUCKET));
+		} else {
+			recipeLayout.getItemStacks().init(0, true, 47, 44);
+		}
+		recipeLayout.getItemStacks().set(0, new ItemStack(ModBlocks.altar));
+
 		double angleBetweenEach = 360.0 / ingredients.getInputs(VanillaTypes.ITEM).size();
 		Point point = new Point(47, 12), center = new Point(47, 44);
 
-		for(List<ItemStack> o : ingredients.getInputs(VanillaTypes.ITEM)) {
+		for (List<ItemStack> o : ingredients.getInputs(VanillaTypes.ITEM)) {
 			recipeLayout.getItemStacks().init(index, true, point.x, point.y);
 			recipeLayout.getItemStacks().set(index, o);
 			index += 1;

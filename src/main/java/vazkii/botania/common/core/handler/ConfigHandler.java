@@ -10,6 +10,16 @@
  */
 package vazkii.botania.common.core.handler;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.IntStream;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Style;
@@ -24,10 +34,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import vazkii.botania.common.Botania;
 import vazkii.botania.common.core.helper.InventoryHelper;
 import vazkii.botania.common.lib.LibMisc;
-
-import java.io.File;
-import java.util.*;
-import java.util.stream.IntStream;
 
 public final class ConfigHandler {
 
@@ -107,6 +113,7 @@ public final class ConfigHandler {
 	public static int runicAltarCapacity = 16;
 	public static int petalApothecaryCapacity = 16;
 	public static int breweryCapacity = 6;
+	public static boolean addCatalystsToJEI = true;
 
 	private static boolean gogChecked = false;
 	public static boolean disablePetalApothecaryBucketBehavior = false;
@@ -340,6 +347,9 @@ public final class ConfigHandler {
 
 		desc = "The maximum number of inputs Botanical Brewery can process at the same time. Does not count the bottle. Defaults to 6. Warning: changing this in any way will empty the Botanical Breweries in existing worlds.";
 		breweryCapacity = loadPropInt("ceu.breweryCapacity", desc, breweryCapacity);
+
+		desc = "Should Runic Altar and Petal Apothecary catalysts be displayed in JEI?";
+		addCatalystsToJEI = loadPropBool("ceu.jeiCatalysts", desc, addCatalystsToJEI);
 
 		desc = "Should Petal Apothecary be NOT clickable with a bucket? Part of Garden of Glass.";
 		disablePetalApothecaryBucketBehavior = loadPropBool("ceu.gog.disablePetalApothecaryBucketBehavior", desc,
