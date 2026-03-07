@@ -9,6 +9,7 @@
 package vazkii.botania.client.integration.jei.runicaltar;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -25,6 +26,7 @@ import vazkii.botania.api.recipe.RecipeRuneAltar;
 import vazkii.botania.client.core.handler.HUDHandler;
 import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.core.handler.ConfigHandler;
+import vazkii.botania.common.core.helper.InventoryHelper;
 
 public class RunicAltarRecipeWrapper implements IRecipeWrapper {
 
@@ -34,6 +36,10 @@ public class RunicAltarRecipeWrapper implements IRecipeWrapper {
 
 	public RunicAltarRecipeWrapper(RecipeRuneAltar recipe) {
 		ImmutableList.Builder<List<ItemStack>> builder = ImmutableList.builder();
+		if (ConfigHandler.addCatalystsToJEI) {
+			builder.add(ConfigHandler.runicAltarCatalystsSet.stream()
+					.map(InventoryHelper::destringifyStack).collect(Collectors.toList()));
+		}
 		for (Object o : recipe.getInputs()) {
 			if (o instanceof ItemStack) {
 				builder.add(ImmutableList.of((ItemStack) o));

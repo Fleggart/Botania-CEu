@@ -10,7 +10,6 @@ package vazkii.botania.client.integration.jei.runicaltar;
 
 import java.awt.Point;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -27,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.core.handler.ConfigHandler;
-import vazkii.botania.common.core.helper.InventoryHelper;
 import vazkii.botania.common.item.ModItems;
 import vazkii.botania.common.lib.LibMisc;
 
@@ -76,30 +74,32 @@ public class RunicAltarRecipeCategory implements IRecipeCategory<RunicAltarRecip
 	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull RunicAltarRecipeWrapper recipeWrapper,
 			@Nonnull IIngredients ingredients) {
 
-		int index = 1;
+		int index = 1, inputCount = ingredients.getInputs(VanillaTypes.ITEM).size();
+		boolean configurePos = true;
 		if (ConfigHandler.addCatalystsToJEI) {
-			index += 2;
+			index++;
+			inputCount--;
+			configurePos = false;
 			recipeLayout.getItemStacks().init(0, true, 47, 49);
-			recipeLayout.getItemStacks().init(1, true, 39, 33);
-			recipeLayout.getItemStacks().init(2, true, 55, 33);
-			// We know there's no nulls because config checks it on load.
-			List<ItemStack> runeCatalysts = ConfigHandler.runicAltarCatalystsSet.stream()
-					.map(InventoryHelper::destringifyStack).collect(Collectors.toList());
-			recipeLayout.getItemStacks().set(1, runeCatalysts);
-			recipeLayout.getItemStacks().set(2, new ItemStack(ModItems.twigWand));
+			recipeLayout.getItemStacks().init(1, true, 55, 33);
+			recipeLayout.getItemStacks().init(2, true, 39, 33);
+			recipeLayout.getItemStacks().set(1, new ItemStack(ModItems.twigWand));
 		} else {
 			recipeLayout.getItemStacks().init(0, true, 47, 44);
 		}
 		recipeLayout.getItemStacks().set(0, new ItemStack(ModBlocks.runeAltar));
 
-		double angleBetweenEach = 360.0 / ingredients.getInputs(VanillaTypes.ITEM).size();
+		double angleBetweenEach = 360.0 / inputCount;
 		Point point = new Point(47, 12), center = new Point(47, 44);
 
 		for (List<ItemStack> o : ingredients.getInputs(VanillaTypes.ITEM)) {
-			recipeLayout.getItemStacks().init(index, true, point.x, point.y);
+			if (configurePos) {
+				recipeLayout.getItemStacks().init(index, true, point.x, point.y);
+				point = rotatePointAbout(point, center, angleBetweenEach);
+			}
+			configurePos = true;
 			recipeLayout.getItemStacks().set(index, o);
 			index += 1;
-			point = rotatePointAbout(point, center, angleBetweenEach);
 		}
 
 		recipeLayout.getItemStacks().init(index, false, 86, 11);
