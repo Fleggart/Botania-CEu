@@ -217,7 +217,7 @@ public class PacketBotaniaEffect implements IMessage {
 					case TERRA_PLATE: {
 						TileEntity te = world.getTileEntity(new BlockPos(message.x, message.y, message.z));
 						if (te instanceof TileTerraPlate) {
-							int ticks = (int) (100.0 * message.args[2]);
+							int ticks = message.args[2];
 
 							int totalSpiritCount = 3;
 							double tickIncrement = 360D / totalSpiritCount;
@@ -235,7 +235,7 @@ public class PacketBotaniaEffect implements IMessage {
 
 								wticks += tickIncrement;
 								float[] colorsfx = lerpColor(makeColor(message.args[0]), makeColor(message.args[1]),
-										ticks);
+										ticks * 0.01f);
 								Botania.proxy.wispFX(x, y, z, colorsfx[0], colorsfx[1], colorsfx[2], 0.85F,
 										(float) g * 0.05F, 0.25F);
 								Botania.proxy.wispFX(x, y, z, colorsfx[0], colorsfx[1], colorsfx[2],

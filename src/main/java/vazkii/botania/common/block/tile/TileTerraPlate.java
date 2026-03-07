@@ -111,7 +111,7 @@ public class TileTerraPlate extends TileMod implements ISparkAttachable, ITickab
 				PacketHandler.sendToNearby(world, getPos(),
 						new PacketBotaniaEffect(PacketBotaniaEffect.EffectType.TERRA_PLATE,
 								getPos().getX(), getPos().getY(), getPos().getZ(),
-								recipe.color1, recipe.color2, (int) progress * 100));
+								recipe.color1, recipe.color2, (int) (progress * 100)));
 			}
 
 			if (mana >= recipe.manaCost) {
