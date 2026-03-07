@@ -1,19 +1,22 @@
 def load_thaumcraft = false
 def load_drawers = false
 def load_albedo = false
+def load_groovyscript = false
 
 final def compile_dependencies = [
-        'com.mod-buildcraft:buildcraft-api:7.99.17': [true],   // compile-time + runtime dependency, API
-        'com.azanor.baubles:Baubles:1.12-1.5.2': [true],       // compile-time + runtime dependency
-        'mezz.jei:jei_1.12.2:4.13.1.220': [true],              // compile-time dependency + dev env
+        'com.mod-buildcraft:buildcraft-api:7.99.17': [true],    // compile-time + runtime dependency, API
+        'com.azanor.baubles:Baubles:1.12-1.5.2': [true],        // compile-time + runtime dependency
+        'curse.maven:had-enough-items-557549:7515497': [true],  // compile-time dependency + dev env
         'curse.maven:thaumcraft-223628:2629023': [load_thaumcraft],
         'curse.maven:albedo-275300:2714505': [load_albedo],
+        'curse.maven:groovyscript-687577:7470234': [load_groovyscript],
 ]
 
 final def runtime_only_dependencies = [
         'curse.maven:hwyla-253449:2568751': [true],
         'curse.maven:storage-drawers-223852:4655859': [load_drawers],
         'curse.maven:chameleon-230497:2450900': [load_drawers],
+        'curse.maven:mixin-booter-419286:7049694': [load_groovyscript],
 ]
 
 repositories {

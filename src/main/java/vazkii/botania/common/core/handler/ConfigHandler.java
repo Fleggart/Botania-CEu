@@ -107,6 +107,7 @@ public final class ConfigHandler {
 	public static Set<String> runicAltarCatalystsSet = new HashSet<>();
 	public static String[] runicAltarRetainedItems = IntStream.rangeClosed(0, 15).mapToObj(i -> "botania:rune@" + i)
 			.toArray(String[]::new);
+	public static Set<String> runicAltarRetainedItemsSet = new HashSet<>();
 	public static String[] petalApothecaryCatalysts = {};
 	public static Set<String> petalApothecaryCatalystsSet = new HashSet<>();
 	public static int elfPortalSize = 2;
@@ -331,6 +332,8 @@ public final class ConfigHandler {
 
 		desc = "The items that should be retained after the Runic Altar finishes a craft. By default, includes all of Botania's runes.";
 		runicAltarRetainedItems = loadPropStringList("ceu.runicAltarRetainedItems", desc, runicAltarRetainedItems);
+		runicAltarRetainedItemsSet.clear();
+		runicAltarRetainedItemsSet.addAll(Arrays.asList(runicAltarRetainedItems));
 
 		desc = "The items that can be used as the catalyst for Petal Apothecary. These items must not be in any Petal Apothecary recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). The default is empty, which means any seed item can be used as a catalyst.";
 		petalApothecaryCatalysts = loadPropStringList("ceu.petalApothecaryCatalysts", desc, petalApothecaryCatalysts);
