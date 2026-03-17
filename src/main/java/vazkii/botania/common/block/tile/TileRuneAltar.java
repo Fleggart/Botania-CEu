@@ -100,19 +100,9 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 			int catalystSlot = getSizeInventory() - 1;
 			if (addItemFromStack(player, stack, catalystSlot)) {
 				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, pos);
-				return true;
-			}
-			// place livingrock in world if the slot is used up
-			if (!world.isRemote) {
-				ItemStack toSpawn = player != null && player.capabilities.isCreativeMode ? stack.copy().splitStack(1)
-						: stack.splitStack(1);
-				EntityItem item = new EntityItem(world, getPos().getX() + 0.5, getPos().getY() + 1,
-						getPos().getZ() + 0.5, toSpawn);
-				item.setPickupDelay(40);
-				item.motionX = item.motionY = item.motionZ = 0;
-				world.spawnEntity(item);
 			}
 
+			// We always return true here so the catalyst isn't placed as a block above the altar.
 			return true;
 		}
 
