@@ -10,6 +10,9 @@
  */
 package vazkii.botania.common;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -35,14 +38,16 @@ import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.corporea.CorporeaHelper;
 import vazkii.botania.api.lexicon.ITwoNamedPage;
 import vazkii.botania.api.lexicon.LexiconEntry;
 import vazkii.botania.api.lexicon.LexiconPage;
-import vazkii.botania.common.advancements.*;
+import vazkii.botania.common.advancements.AlfPortalTrigger;
+import vazkii.botania.common.advancements.CorporeaRequestTrigger;
+import vazkii.botania.common.advancements.DopplegangerNoArmorTrigger;
+import vazkii.botania.common.advancements.RelicBindTrigger;
+import vazkii.botania.common.advancements.UseItemSuccessTrigger;
 import vazkii.botania.common.block.ModBanners;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.ModMultiblocks;
@@ -227,7 +232,6 @@ public class Botania {
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
-//		event.registerServerCommand(new CommandDownloadLatest());
 		event.registerServerCommand(new CommandShare());
 		event.registerServerCommand(new CommandOpen());
 		if(ConfigHandler.registerSkyblockHooks)

@@ -321,12 +321,6 @@ botania.versioning.flavour47=구버전을 쓰는 건 지는거라 생각해요.
 botania.versioning.flavour48=아 뭐이리 많아. 이런 거 쓰는거 귀찮으니 빨리 업데이트나 해요.
 botania.versioning.flavour49=히익 머글이라니 그러면서 보타니아를 한다구요? 왜요?
 botania.versioning.outdated=당신이 실행하고 있는 보타니아의 빌드는 %s지만, 최신버전은 %s입니다.
-botania.versioning.startingDownload=[{"text":" %s의 다운로드를 시작합니다. 하드디스크를 제거하지 마세요. 그럼 즐 보타니아! ","color":"aqua"},{"text":"보타니아","color":"green"},{"text":"? Consider supporting ","color":"aqua"},{"text":"Vazkii","color":"light_purple"},{"text":" on [","color":"aqua"},{"text":"Patreon","color":"gold","hoverEvent":{"action":"show_text","value":{"text":"Click this to go to Vazkii's Patreon","color":"light_purple"}},"clickEvent":{"action":"open_url","value":"http://www.patreon.com/Vazkii"}},{"text":"]!","color":"aqua"}]
-botania.versioning.startingDownload=%s의 다운로드를 시작합니다. 하드디스크를 제거하지 마세요.
-botania.versioning.doneDownloading=%s의 다운로드가 끝났습니다. 당신의 보타니아 구버젼 MODNAME.jar 을 제거해주시고 업데이트를 위해 마인크래프트를 재시작 해주세요
-botania.versioning.downloadedAlready=당신은 이미 최신 버젼을 다운로드 하셨습니다. 게임을 종료하시고, .minecraft - mods 에서 구버젼을 삭제해주세요, 그리고 게임을 재시작 해주세요!
-botania.versioning.downloadingAlready=이미 다운로드 중입니다. 조금만 더 시간을 주세요.
-botania.versioning.error=앗! 보타니아 업데이트 파일 다운로드중 오류가 생긴거 같습니다. botaniamod.net에서 받아주세요
 
 # BAUBLE TOOLTIPS
 botania.baubletype.amulet=&a아뮬렛&7 슬릇에 착용 가능

@@ -10,8 +10,6 @@
  */
 package vazkii.botania.common.core.version;
 
-import net.minecraftforge.common.MinecraftForge;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -27,7 +25,7 @@ public class ThreadVersionChecker extends Thread {
 	@Override
 	public void run() {
 		try {
-			URL url = new URL("https://raw.githubusercontent.com/Vazkii/Botania/master/version/" + MinecraftForge.MC_VERSION + ".txt");
+			URL url = new URL("https://raw.githubusercontent.com/TeamDimensional/Botania-CEu/1.12.2/version/1.12.2.txt");
 			BufferedReader r = new BufferedReader(new InputStreamReader(url.openStream()));
 			VersionChecker.onlineVersion = r.readLine();
 			r.close();
