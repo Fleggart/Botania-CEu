@@ -75,6 +75,8 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull PetalApothecaryRecipeWrapper recipeWrapper,
 			@Nonnull IIngredients ingredients) {
 
+		recipeLayout.getItemStacks().addTooltipCallback(recipeWrapper);
+
 		int index = 1, inputCount = ingredients.getInputs(VanillaTypes.ITEM).size();
 		boolean configurePos = true;
 		if (ConfigHandler.addCatalystsToJEI) {

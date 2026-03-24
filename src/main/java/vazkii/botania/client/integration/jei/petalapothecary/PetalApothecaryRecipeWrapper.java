@@ -15,9 +15,11 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableList;
 
+import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -25,7 +27,7 @@ import vazkii.botania.api.recipe.RecipePetals;
 import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.helper.InventoryHelper;
 
-public class PetalApothecaryRecipeWrapper implements IRecipeWrapper {
+public class PetalApothecaryRecipeWrapper implements IRecipeWrapper, ITooltipCallback<ItemStack> {
 
 	private final List<List<ItemStack>> input;
 	private final ItemStack output;
@@ -57,6 +59,13 @@ public class PetalApothecaryRecipeWrapper implements IRecipeWrapper {
 	public void getIngredients(@Nonnull IIngredients ingredients) {
 		ingredients.setInputLists(VanillaTypes.ITEM, input);
 		ingredients.setOutput(VanillaTypes.ITEM, output);
+	}
+
+	@Override
+	public void onTooltip(int i, boolean isInput, ItemStack stack, List<String> tooltip) {
+		if (ConfigHandler.addCatalystsToJEI && isInput && i == 2 && ConfigHandler.petalApothecaryCatalystsSet.isEmpty()) {
+			tooltip.add(I18n.format("botania.nei.petalApothecaryAnySeeds"));
+		}
 	}
 
 }
