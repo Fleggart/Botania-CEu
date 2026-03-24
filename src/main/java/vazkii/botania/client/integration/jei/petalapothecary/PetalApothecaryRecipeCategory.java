@@ -98,6 +98,7 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 				recipeLayout.getItemStacks().init(index, true, point.x, point.y);
 				point = rotatePointAbout(point, center, angleBetweenEach);
 			}
+			configurePos = true;
 			recipeLayout.getItemStacks().set(index, o);
 			index += 1;
 		}
