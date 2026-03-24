@@ -22,8 +22,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.lexicon.ILexicon;
 import vazkii.botania.api.lexicon.multiblock.Multiblock;
@@ -49,8 +47,6 @@ import java.util.*;
 import java.util.function.Function;
 
 public class TileAlfPortal extends TileMod implements ITickable {
-
-	private static final Log log = LogFactory.getLog(TileAlfPortal.class);
 
 	private static BlockPos[] getLivingwoodPositions() {
 		List<BlockPos> positions = new ArrayList<>();
