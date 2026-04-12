@@ -94,6 +94,9 @@ public class TileAlfPortal extends TileMod implements ITickable {
 	// Because our itemStack size may exceed 128, we need to write it separately
 	private static final String TAG_STACK_SIZE = "portalStackCount";
 	private static final String TAG_PORTAL_FLAG = "_elvenPortal";
+	// This does not need to be persisted for server restarts, as the normal state means inserting the item resets the timer
+	// and the worst thing that can happen is having to wait 5 extra ticks for the item
+	private boolean hadRecipe = false;
 
 	/**
 	 * An extension of ArrayList that implements methods to manage ItemStacks within the ArrayList simultaneously
@@ -146,7 +149,7 @@ public class TileAlfPortal extends TileMod implements ITickable {
 		}
 
 		/**
-		 * @return index in the ArrayList that the requested ItemStack is at, or zero if it could not be found
+		 * @return index in the ArrayList that the requested ItemStack is at, or INT_MAX if it could not be found
 		 */
 		public int getItemPosition(ItemStack stack) {
 			for(int i = 0; i < this.size(); i++) {
@@ -156,7 +159,7 @@ public class TileAlfPortal extends TileMod implements ITickable {
 				}
 			}
 			Botania.LOGGER.error("Could not find index of requested item in TileAlfPortal block, returning index of 0 instead");
-			return 0;
+			return Integer.MAX_VALUE;
 		}
 	}
 
@@ -233,10 +236,12 @@ public class TileAlfPortal extends TileMod implements ITickable {
 						if (validateItemUsage(stack)) {
 							addItem(stack);
 						}
-						ticksSinceLastItem = 0;
+						if (!hadRecipe) {
+							ticksSinceLastItem = 0;
+						}
 					}
 				}
-			if(ticksSinceLastItem >= 4) {
+			if(ticksSinceLastItem >= 5) {
 				if(!world.isRemote) {
 					resolveRecipes();
 				}
@@ -359,9 +364,11 @@ public class TileAlfPortal extends TileMod implements ITickable {
 					for(ItemStack output : recipe.getOutputs())
 						spawnItem(output.copy());
 				}
-				break;
+				return;
 			}
 		}
+
+		hadRecipe = false;
 	}
 
 	private void spawnItem(ItemStack stack) {
@@ -369,6 +376,7 @@ public class TileAlfPortal extends TileMod implements ITickable {
 		item.getEntityData().setBoolean(TAG_PORTAL_FLAG, true);
 		world.spawnEntity(item);
 		ticksSinceLastItem = 0;
+		hadRecipe = true;
 	}
 
 	@Nonnull
