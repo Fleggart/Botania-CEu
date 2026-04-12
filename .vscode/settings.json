@@ -1,0 +1,9 @@
+{
+  "java.import.gradle.java.home": "/usr/lib/jvm/java-25-openjdk",
+  "java.format.enabled": true,
+  "java.format.onType.enabled": true,
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  }
+}
