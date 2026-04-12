@@ -52,6 +52,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 	private static final int SET_KEEP_TICKS_EVENT = 0;
 	private static final int SET_COOLDOWN_EVENT = 1;
 	private static final int CRAFT_EFFECT_EVENT = 2;
+	private static final String TAG_ALTAR_FLAG = "_runicAltar";
 
 	RecipeRuneAltar currentRecipe;
 
@@ -164,7 +165,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 			List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class,
 					new AxisAlignedBB(pos, pos.add(1, 1, 1)));
 			for (EntityItem item : items)
-				if (!item.isDead && !item.getItem().isEmpty()) {
+				if (!item.isDead && !item.getItem().isEmpty() && !item.getEntityData().hasKey(TAG_ALTAR_FLAG)) {
 					ItemStack stack = item.getItem();
 					boolean acceptsCatalyst = itemHandler.getStackInSlot(getSizeInventory() - 1).isEmpty();
 					boolean isCatalyst = ConfigHandler.runicAltarCatalystsSet
@@ -284,6 +285,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 				ItemStack output = recipe.getOutput().copy();
 				EntityItem outputItem = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5,
 						output);
+				outputItem.getEntityData().setBoolean(TAG_ALTAR_FLAG, true);
 				world.spawnEntity(outputItem);
 				currentRecipe = null;
 				world.addBlockEvent(getPos(), ModBlocks.runeAltar, SET_COOLDOWN_EVENT, 60);
@@ -296,6 +298,7 @@ public class TileRuneAltar extends TileSimpleInventory implements IManaReceiver,
 						if (shouldRetainAfterCraft(stack)) {
 							EntityItem outputRune = new EntityItem(world, getPos().getX() + 0.5, getPos().getY() + 1.5,
 									getPos().getZ() + 0.5, stack.copy());
+							outputRune.getEntityData().setBoolean(TAG_ALTAR_FLAG, true);
 							world.spawnEntity(outputRune);
 						}
 
