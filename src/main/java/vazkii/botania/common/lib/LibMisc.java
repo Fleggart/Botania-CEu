@@ -10,13 +10,15 @@
  */
 package vazkii.botania.common.lib;
 
+import vazkii.botania.Tags;
+
 public final class LibMisc {
 
 	// Mod Constants
 	public static final String MOD_ID = "botania";
 	public static final String MOD_NAME = "Botania";
-	public static final String BUILD = "GRADLE:BUILD";
-	public static final String VERSION = "GRADLE:VERSION-" + BUILD;
+	public static final String VERSION = Tags.VERSION;
+	public static final String BUILD = VERSION.split("-")[1];
 	public static final String DEPENDENCIES = "required-after:baubles@[1.5.2,);after:thaumcraft@[6.1.BETA21,);after:jei@[1.12.2-4.13.1.220,);after:albedo@[1.0.0,)";
 
 	// Network Contants

@@ -50,8 +50,6 @@ public final class DebugHandler {
 		if(ConfigHandler.debugInfo && Minecraft.getMinecraft().gameSettings.showDebugInfo) {
 			event.getLeft().add("");
 			String version = LibMisc.VERSION;
-			if(version.contains("GRADLE"))
-				version = "N/A";
 
 			event.getLeft().add(PREFIX + "pS: " + ParticleRenderDispatcher.sparkleFxCount + ", pFS: " + ParticleRenderDispatcher.fakeSparkleFxCount + ", pW: " + ParticleRenderDispatcher.wispFxCount + ", pDIW: " + ParticleRenderDispatcher.depthIgnoringWispFxCount + ", pLB: " + ParticleRenderDispatcher.lightningCount);
 			event.getLeft().add(PREFIX + "(CLIENT) netColl: " + ManaNetworkHandler.instance.getAllCollectorsInWorld(world).size() + ", netPool: " + ManaNetworkHandler.instance.getAllPoolsInWorld(world).size() + ", rv: " + version);
