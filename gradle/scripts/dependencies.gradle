@@ -43,6 +43,7 @@ def load_thaumcraft = false
 def load_drawers = false
 def load_albedo = false
 def load_groovyscript = false
+def load_aa = false
 
 final def compile_dependencies = [
         'com.mod-buildcraft:buildcraft-api:7.99.17': [true],    // compile-time + runtime dependency, API
@@ -58,6 +59,7 @@ final def runtime_only_dependencies = [
         'curse.maven:storage-drawers-223852:4655859': [load_drawers],
         'curse.maven:chameleon-230497:2450900': [load_drawers],
         'curse.maven:mixin-booter-419286:7049694': [load_groovyscript],
+        'curse.maven:actually-additions-228404:3117927': [load_aa],
 ]
 
 dependencies {
