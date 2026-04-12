@@ -23,15 +23,11 @@ import net.minecraft.item.ItemStack;
 import vazkii.botania.api.item.IBaubleRender.Helper;
 import vazkii.botania.client.core.helper.IconHelper;
 import vazkii.botania.client.core.helper.ShaderHelper;
-import vazkii.botania.common.Botania;
 import vazkii.botania.common.block.ModBlocks;
-import vazkii.botania.common.core.version.VersionChecker;
+import vazkii.botania.common.core.MetadataFetcher;
 import vazkii.botania.common.item.block.ItemBlockSpecialFlower;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -39,7 +35,7 @@ import java.util.Properties;
 public final class ContributorFancinessHandler implements LayerRenderer<EntityPlayer> {
 
 	public static final Map<String, ItemStack> flowerMap = new HashMap<>();
-	private static boolean startedLoading = false;
+	private static boolean callbackSet = false;
 
 	@Override
 	public void doRenderLayer(@Nonnull EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
@@ -73,11 +69,10 @@ public final class ContributorFancinessHandler implements LayerRenderer<EntityPl
 	public boolean shouldCombineTextures() {
 		return false;
 	}
-
 	public static void firstStart() {
-		if(!startedLoading) {
-			new ThreadContributorListLoader();
-			startedLoading = true;
+		if (!callbackSet) {
+			callbackSet = true;
+			MetadataFetcher.INSTANCE.subscribe(fetcher -> load(fetcher.contributors()));
 		}
 	}
 
@@ -114,7 +109,6 @@ public final class ContributorFancinessHandler implements LayerRenderer<EntityPl
 		GlStateManager.popMatrix();
 	}
 
-	@SuppressWarnings("deprecation")
 	private static void renderFlower(EntityPlayer player, ItemStack flower) {
 		GlStateManager.pushMatrix();
 		Helper.translateToHeadLevel(player);
@@ -127,30 +121,6 @@ public final class ContributorFancinessHandler implements LayerRenderer<EntityPl
 		Minecraft.getMinecraft().getRenderItem().renderItem(flower, player, ItemCameraTransforms.TransformType.NONE, false);
 		ShaderHelper.releaseShader();
 		GlStateManager.popMatrix();
-	}
-
-	private static class ThreadContributorListLoader extends Thread {
-
-		public ThreadContributorListLoader() {
-			setName("Botania Contributor Fanciness Thread");
-			setDaemon(true);
-			start();
-		}
-
-		@Override
-		public void run() {
-			try {
-				URL url = new URL("https://raw.githubusercontent.com/Vazkii/Botania/master/contributors.properties");
-				Properties props = new Properties();
-				try (InputStreamReader reader = new InputStreamReader(url.openStream())) {
-					props.load(reader);
-					load(props);
-				}
-			} catch (IOException e) {
-				Botania.LOGGER.info("Could not load contributors list. Either you're offline or github is down. Nothing to worry about, carry on~");
-			}
-		}
-
 	}
 
 }

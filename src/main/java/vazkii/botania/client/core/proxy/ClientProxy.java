@@ -92,6 +92,7 @@ import vazkii.botania.common.core.helper.MathHelper;
 import vazkii.botania.common.core.helper.Vector3;
 import vazkii.botania.common.core.proxy.IProxy;
 import vazkii.botania.common.core.version.AdaptorNotifier;
+import vazkii.botania.common.core.version.VersionChecker;
 import vazkii.botania.common.entity.EntityBabylonWeapon;
 import vazkii.botania.common.entity.EntityCorporeaSpark;
 import vazkii.botania.common.entity.EntityDoppleganger;
@@ -166,8 +167,8 @@ public class ClientProxy implements IProxy {
 
 		if(ConfigHandler.useAdaptativeConfig)
 			MinecraftForge.EVENT_BUS.register(AdaptorNotifier.class);
-//		if(ConfigHandler.versionCheckEnabled)
-//			VersionChecker.init();
+		if(ConfigHandler.versionCheckEnabled)
+			VersionChecker.init();
 
 		if(ConfigHandler.enableSeasonalFeatures) {
 			LocalDateTime now = LocalDateTime.now();

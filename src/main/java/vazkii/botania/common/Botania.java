@@ -54,6 +54,7 @@ import vazkii.botania.common.block.ModMultiblocks;
 import vazkii.botania.common.block.tile.TileLightRelay;
 import vazkii.botania.common.block.tile.corporea.TileCorporeaIndex;
 import vazkii.botania.common.brew.ModBrews;
+import vazkii.botania.common.core.MetadataFetcher;
 import vazkii.botania.common.core.command.CommandOpen;
 import vazkii.botania.common.core.command.CommandShare;
 import vazkii.botania.common.core.command.CommandSkyblockSpread;
@@ -143,6 +144,8 @@ public class Botania {
 		CriteriaTriggers.register(DopplegangerNoArmorTrigger.INSTANCE);
 		CriteriaTriggers.register(RelicBindTrigger.INSTANCE);
 		CriteriaTriggers.register(UseItemSuccessTrigger.INSTANCE);
+
+		MetadataFetcher.INSTANCE.run();
 
 		proxy.preInit(event);
 	}

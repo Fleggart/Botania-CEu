@@ -285,7 +285,7 @@ public class RenderTileTinyPotato extends TileEntitySpecialRenderer<TileTinyPota
 				GlStateManager.translate(1.25F, -1.25F, 2.25F);
 				mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 				renderBlock(Blocks.CAKE);
-			} else if (ContributorFancinessHandler.flowerMap != null && ContributorFancinessHandler.flowerMap.containsKey(name)) {
+			} else {
 				ItemStack icon = ContributorFancinessHandler.flowerMap.getOrDefault(name, ItemStack.EMPTY);
 				if (!icon.isEmpty()) {
 					mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);

@@ -17,12 +17,13 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
+import vazkii.botania.common.Botania;
+import vazkii.botania.common.core.MetadataFetcher;
 import vazkii.botania.common.lib.LibMisc;
 
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = LibMisc.MOD_ID)
@@ -33,23 +34,24 @@ public final class VersionChecker {
 
 	private static final int FLAVOUR_MESSAGES = 65;
 
-	public static volatile boolean doneChecking = false;
-	public static volatile String onlineVersion = "";
+	private static volatile boolean fetched = false;
+	private static volatile String onlineVersion = "";
 	private static boolean triedToWarnPlayer = false;
 
-	public static volatile boolean startedDownload = false;
-	public static volatile boolean downloadedFile = false;
-
 	public static void init() {
-		new ThreadVersionChecker();
+		MetadataFetcher.INSTANCE.subscribe(fetcher -> {
+			System.out.println("fetcher: " + fetcher);
+			onlineVersion = fetcher.version();
+			fetched = true;
+		});
 	}
 
 	@SubscribeEvent
 	public static void onTick(ClientTickEvent event) {
-		if (event.phase == Phase.END && Minecraft.getMinecraft().player != null && !triedToWarnPlayer && doneChecking) {
-			if (!onlineVersion.isEmpty()) {
+		if (fetched && event.phase == Phase.END && Minecraft.getMinecraft().player != null && !triedToWarnPlayer) {
+			if (onlineVersion != null && !onlineVersion.isEmpty()) {
 				EntityPlayer player = Minecraft.getMinecraft().player;
-				int onlineBuild = Integer.parseInt(onlineVersion.split("-")[1]);
+				int onlineBuild = LibMisc.parseDigitsOf(onlineVersion.split("-")[1]);
 				int clientBuild = LibMisc.getBuild();
 				if (onlineBuild > clientBuild) {
 					player.sendMessage(new TextComponentTranslation(
@@ -63,6 +65,8 @@ public final class VersionChecker {
 									.replaceAll("%version%", onlineVersion));
 					player.sendMessage(component);
 				}
+			} else {
+				Botania.LOGGER.warn("Unable to fetch the mod's version");
 			}
 
 			triedToWarnPlayer = true;
