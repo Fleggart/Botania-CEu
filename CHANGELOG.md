@@ -1,5 +1,17 @@
 # Changelog
 
+## [r1.10-372] - 2026-04-14
+
+### Build
+- Migrated the project to RetroFuturaGradle
+
+### QOL
+- Elven Portal will no longer get stuck when it receives more than 4 distinct stacks per second
+- Runes dropped out of Runic Altars will no longer try to enter adjacent Runic Altars
+
+### Fixes
+- Cleaned up the mod version checker and made it functional again
+
 ## [r1.10-371] - 2026-03-24
 
 ### Fixes

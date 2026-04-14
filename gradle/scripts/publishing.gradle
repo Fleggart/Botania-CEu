@@ -53,15 +53,10 @@ if (propertyBool('publish_to_curseforge')) {
             }
             mainArtifact tasks.reobfJar.archiveFile.get().asFile, {
                 displayName = "${propertyString('mod_name')} ${propertyString('mod_version')}"
-                if (propertyBool('use_mixins')) {
-                    relations {
-                        requiredDependency 'mixin-booter'
-                    }
-                }
-                if (propertyBool('use_asset_mover')) {
-                    relations {
-                        requiredDependency 'assetmover'
-                    }
+                relations {
+                    requiredDependency 'bubbles-a-baubles-fork'
+                    optionalDependency 'had-enough-items'
+                    optionalDependency 'groovyscript'
                 }
             }
             options {
