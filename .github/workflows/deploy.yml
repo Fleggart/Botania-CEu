@@ -9,7 +9,7 @@ name: Deploy
 on:
   push:
     tags:
-      - 'r1.[0-9]+-[0-9]+'
+      - 'r1.[0-9]+-[0-9]+[a-z]?'
 
 jobs:
   build:

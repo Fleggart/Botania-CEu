@@ -272,7 +272,7 @@ test {
 }
 
 changelog {
-    headerParserRegex = ~/(r1\.\d+-\d+)/
+    headerParserRegex = ~/(r1\.\d+-\d+[a-z]?)/
 }
 
 String parserChangelog() {
