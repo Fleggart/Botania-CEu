@@ -29,10 +29,14 @@ body:
       label: Other installed mods
       description: If you're playing a modpack, make sure the issue can be reproduced using the latest version of Botania CEu and no other mods. If it can't, send the list of mods necessary to reproduce this with their versions (for example, a latest.log file usually has a list of mods), or a link to the modpack version you're playing. Note that if the list of mods in here is large, you may be asked to bisect the issue (this is not a guarantee).
   - type: textarea
-    id: description
+    id: steps-to-reproduce
     attributes:
-      label: What did you expect to happen?
+      label: Steps to Reproduce
   - type: textarea
-    id: description
+    id: expected-behavior
     attributes:
-      label: What happened?
+      label: Expected Behavior
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
