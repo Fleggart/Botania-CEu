@@ -271,6 +271,10 @@ test {
     }
 }
 
+changelog {
+    headerParserRegex = ~/(r1\.\d+-\d+)/
+}
+
 String parserChangelog() {
     if (!file('CHANGELOG.md').exists()) {
         throw new GradleException('publish_with_changelog is true, but CHANGELOG.md does not exist in the workspace!')
