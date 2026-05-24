@@ -27,6 +27,7 @@ import vazkii.botania.common.block.tile.TileSimpleInventory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -100,6 +101,21 @@ public class InventoryHelper {
 			return new ItemStack(it, 1, meta);
 		}
 		return null;
+	}
+
+	public static List<String> expandMetaInStringifiedStacks(List<String> input) {
+		List<String> output = new ArrayList<>();
+		output.addAll(input);
+		for (String x : input) {
+			if (x.endsWith("@0")) {
+				output.add(x.substring(0, x.length() - 2));
+			}
+		}
+		return output;
+	}
+
+	public static List<String> expandMetaInStringifiedStacks(String[] input) {
+		return expandMetaInStringifiedStacks(Arrays.asList(input));
 	}
 
 	public static void resizeInventory(ItemStackHandler inv, int newSize) {

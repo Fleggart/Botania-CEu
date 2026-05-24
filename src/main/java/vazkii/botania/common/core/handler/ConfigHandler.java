@@ -326,17 +326,17 @@ public final class ConfigHandler {
 		desc = "The items that can be used as the catalyst for Runic Altar. These items must not be in any Runic Altar recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). Default is botania:livingrock.";
 		runicAltarCatalysts = loadPropStringList("ceu.runicAltarCatalysts", desc, runicAltarCatalysts);
 		runicAltarCatalystsSet.clear();
-		runicAltarCatalystsSet.addAll(Arrays.asList(runicAltarCatalysts));
+		runicAltarCatalystsSet.addAll(InventoryHelper.expandMetaInStringifiedStacks(runicAltarCatalysts));
 
 		desc = "The items that should be retained after the Runic Altar finishes a craft. By default, includes all of Botania's runes.";
 		runicAltarRetainedItems = loadPropStringList("ceu.runicAltarRetainedItems", desc, runicAltarRetainedItems);
 		runicAltarRetainedItemsSet.clear();
-		runicAltarRetainedItemsSet.addAll(Arrays.asList(runicAltarRetainedItems));
+		runicAltarRetainedItemsSet.addAll(InventoryHelper.expandMetaInStringifiedStacks(runicAltarRetainedItems));
 
 		desc = "The items that can be used as the catalyst for Petal Apothecary. These items must not be in any Petal Apothecary recipes. Syntax is mod_id:item_id or mod_id:item_id@meta (for meta > 0). The default is empty, which means any seed item can be used as a catalyst.";
 		petalApothecaryCatalysts = loadPropStringList("ceu.petalApothecaryCatalysts", desc, petalApothecaryCatalysts);
 		petalApothecaryCatalystsSet.clear();
-		petalApothecaryCatalystsSet.addAll(Arrays.asList(petalApothecaryCatalysts));
+		petalApothecaryCatalystsSet.addAll(InventoryHelper.expandMetaInStringifiedStacks(petalApothecaryCatalysts));
 
 		desc = "The size of the Elf portal. 1 is a 1x1 square on the internals, 2 is a 3x3 square, etc. Defaults to 2. Warning: large numbers cause lag.";
 		elfPortalSize = loadPropInt("ceu.elfPortalSize", desc, elfPortalSize);
