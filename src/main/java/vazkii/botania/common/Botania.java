@@ -30,8 +30,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.StartupQuery;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
@@ -94,10 +96,8 @@ import vazkii.botania.common.network.PacketHandler;
 import vazkii.botania.common.world.SkyblockWorldEvents;
 import vazkii.botania.common.world.WorldTypeSkyblock;
 
-@Mod(modid = LibMisc.MOD_ID, name = LibMisc.MOD_NAME, version = LibMisc.VERSION, dependencies = LibMisc.DEPENDENCIES, guiFactory = LibMisc.GUI_FACTORY)
+@Mod(modid = LibMisc.MOD_ID, name = LibMisc.MOD_NAME, version = LibMisc.VERSION, dependencies = LibMisc.DEPENDENCIES)
 public class Botania {
-
-	public static boolean gardenOfGlassLoaded = false;
 
 	public static boolean thaumcraftLoaded = false;
 	public static boolean bcApiLoaded = false;
@@ -115,12 +115,6 @@ public class Botania {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		gardenOfGlassLoaded = Loader.isModLoaded("gardenofglass");
-		if (gardenOfGlassLoaded) {
-			LOGGER.warn("Garden of Glass is loaded. It is not necessary with Botania CEu. All features of GoG can be configured separately (search for ceu.gog in the config file).");
-			LOGGER.warn("As a fallback, all config options in GoG have been automatically enabled.");
-		}
-
 		thaumcraftLoaded = Loader.isModLoaded("thaumcraft");
 		bcApiLoaded = Loader.isModLoaded("buildcraftlib");
 		bloodMagicLoaded = Loader.isModLoaded("bloodmagic"); // Psh, noob
@@ -129,7 +123,7 @@ public class Botania {
 
 		BotaniaAPI.internalHandler = new InternalMethodHandler();
 
-		ConfigHandler.loadConfig(event.getSuggestedConfigurationFile());
+		ConfigHandler.setConfigFolder(event.getModConfigurationDirectory());
 
 		PacketHandler.init();
 		ModEntities.init();
@@ -148,6 +142,21 @@ public class Botania {
 		MetadataFetcher.INSTANCE.run();
 
 		proxy.preInit(event);
+	}
+
+	@EventHandler
+	public void lateInit(FMLServerAboutToStartEvent event) {
+
+		boolean gardenOfGlassLoaded = Loader.isModLoaded("gardenofglass");
+		if (gardenOfGlassLoaded) {
+			StartupQuery.notify("Garden of Glass is loaded.\n\n" +
+			"Botania CEu natively supports all features of Garden of Glass\n" + 
+			"(search for it in the config file).\n\n" + 
+			"The automatic hook to enable those options was removed in version r1.10-373,\n" +
+			"so installing Garden of Glass no longer changes anything.\n\n" +
+			"It is recommended to change these settings where necessary and remove the mod.");
+		}
+
 	}
 
 	@EventHandler
@@ -202,7 +211,7 @@ public class Botania {
 		}
 
 		ModBlocks.addDispenserBehaviours();
-		ConfigHandler.loadPostInit();
+		ConfigHandler.postInitValidation();
 		LexiconData.postInit();
 
 		int words = 0;

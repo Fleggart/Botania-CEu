@@ -15,8 +15,8 @@ import vazkii.botania.Tags;
 public final class LibMisc {
 
 	// Mod Constants
-	public static final String MOD_ID = "botania";
-	public static final String MOD_NAME = "Botania";
+	public static final String MOD_ID = Tags.MOD_ID;
+	public static final String MOD_NAME = Tags.MOD_NAME;
 	public static final String VERSION = Tags.VERSION;
 	public static final String BUILD = VERSION.split("-")[1];
 	public static final String DEPENDENCIES = "required-after:baubles@[1.5.2,);after:thaumcraft@[6.1.BETA21,);after:jei@[1.12.2-4.13.1.220,);after:albedo@[1.0.0,)";
@@ -27,7 +27,6 @@ public final class LibMisc {
 	// Proxy Constants
 	public static final String PROXY_SERVER = "vazkii.botania.common.core.proxy.ServerProxy";
 	public static final String PROXY_CLIENT = "vazkii.botania.client.core.proxy.ClientProxy";
-	public static final String GUI_FACTORY = "vazkii.botania.client.core.proxy.GuiFactory";
 
 	// IMC Keys
 	public static final String BLACKLIST_ITEM = "blackListItem";

@@ -36,7 +36,6 @@ import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.core.handler.PersistentVariableHelper;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.core.proxy.ClientProxy;
-import vazkii.botania.client.gui.GuiBotaniaConfig;
 import vazkii.botania.client.gui.lexicon.button.GuiButtonAchievement;
 import vazkii.botania.client.gui.lexicon.button.GuiButtonBookmark;
 import vazkii.botania.client.gui.lexicon.button.GuiButtonCategory;
@@ -183,7 +182,7 @@ public class GuiLexicon extends GuiScreen {
 		}
 		populateBookmarks();
 		if(isMainPage()) {
-			buttonList.add(new GuiButtonOptions(-1, left + 20, top + guiHeight - 25));
+			// buttonList.add(new GuiButtonOptions(-1, left + 20, top + guiHeight - 25));
 			buttonList.add(new GuiButtonAchievement(-2, left + 33, top + guiHeight - 25));
 			buttonList.add(new GuiButtonChallenges(-3, left + 45, top + guiHeight - 25));
 			buttonList.add(new GuiButtonScaleChange(-4, left + 57, top + guiHeight - 25));
@@ -428,9 +427,6 @@ public class GuiLexicon extends GuiScreen {
 			mc.displayGuiScreen(new GuiLexiconIndex(category));
 			ClientTickHandler.notifyPageChange();
 		} else switch(par1GuiButton.id) {
-		case -1 :
-			mc.displayGuiScreen(new GuiBotaniaConfig(this));
-			break;
 		case -2 :
 			if(mc.player != null) {
 				GuiScreenAdvancements gui = new GuiScreenAdvancements(this.mc.player.connection.getAdvancementManager());

@@ -91,7 +91,6 @@ import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.helper.MathHelper;
 import vazkii.botania.common.core.helper.Vector3;
 import vazkii.botania.common.core.proxy.IProxy;
-import vazkii.botania.common.core.version.AdaptorNotifier;
 import vazkii.botania.common.core.version.VersionChecker;
 import vazkii.botania.common.entity.EntityBabylonWeapon;
 import vazkii.botania.common.entity.EntityCorporeaSpark;
@@ -164,9 +163,6 @@ public class ClientProxy implements IProxy {
 
 		if(ConfigHandler.boundBlockWireframe)
 			MinecraftForge.EVENT_BUS.register(BoundTileRenderer.class);
-
-		if(ConfigHandler.useAdaptativeConfig)
-			MinecraftForge.EVENT_BUS.register(AdaptorNotifier.class);
 		if(ConfigHandler.versionCheckEnabled)
 			VersionChecker.init();
 
@@ -405,9 +401,6 @@ public class ClientProxy implements IProxy {
 	private boolean doParticle() {
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			return false;
-
-		if(!ConfigHandler.useVanillaParticleLimiter)
-			return true;
 
 		float chance = 1F;
 		if(Minecraft.getMinecraft().gameSettings.particleSetting == 1)
