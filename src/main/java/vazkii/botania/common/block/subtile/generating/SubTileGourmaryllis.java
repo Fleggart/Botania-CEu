@@ -25,6 +25,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import vazkii.botania.api.lexicon.LexiconEntry;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.SubTileGenerating;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.lexicon.LexiconData;
 
 import java.util.List;
@@ -87,8 +88,8 @@ public class SubTileGourmaryllis extends SubTileGenerating {
 						lastFoodCount = 1;
 					}
 
-					int val = Math.min(12, ((ItemFood) stack.getItem()).getHealAmount(stack));
-					digestingMana = val * val * 70;
+					int val = Math.min(ConfigHandler.genFlowers.gourmMaxFood, ((ItemFood) stack.getItem()).getHealAmount(stack));
+					digestingMana = val * val * ConfigHandler.genFlowers.gourmMultiplier;
 					digestingMana *= 1F / lastFoodCount;
 					cooldown = val * 10;
 					item.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.2F, 0.6F);
@@ -126,7 +127,7 @@ public class SubTileGourmaryllis extends SubTileGenerating {
 
 	@Override
 	public int getMaxMana() {
-		return 9000;
+		return ConfigHandler.genFlowers.gourmCapacity;
 	}
 
 	@Override

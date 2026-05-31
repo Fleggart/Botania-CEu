@@ -23,6 +23,7 @@ import vazkii.botania.api.subtile.ISubTileContainer;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.SubTileEntity;
 import vazkii.botania.api.subtile.SubTileGenerating;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.helper.ItemNBTHelper;
 import vazkii.botania.common.lexicon.LexiconData;
 
@@ -42,9 +43,9 @@ public class SubTileRafflowsia extends SubTileGenerating {
 	public void onUpdate() {
 		super.onUpdate();
 
-		int mana = 2100;
+		int mana = ConfigHandler.genFlowers.rafflowsiaMana;
 
-		if(getMaxMana() - this.mana >= mana && !supertile.getWorld().isRemote && ticksExisted % 40 == 0) {
+		if(getMaxMana() - this.mana >= mana && !supertile.getWorld().isRemote && ticksExisted % ConfigHandler.genFlowers.rafflowsiaDelay == 0) {
 			for(int i = 0; i < RANGE * 2 + 1; i++)
 				for(int j = 0; j < RANGE * 2 + 1; j++)
 					for(int k = 0; k < RANGE * 2 + 1; k++) {

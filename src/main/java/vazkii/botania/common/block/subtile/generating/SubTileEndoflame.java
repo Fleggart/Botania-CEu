@@ -24,12 +24,12 @@ import vazkii.botania.api.lexicon.LexiconEntry;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.SubTileGenerating;
 import vazkii.botania.common.block.ModBlocks;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.handler.ModSounds;
 import vazkii.botania.common.lexicon.LexiconData;
 
 public class SubTileEndoflame extends SubTileGenerating {
 	private static final String TAG_BURN_TIME = "burnTime";
-	private static final int FUEL_CAP = 32000;
 	private static final int RANGE = 3;
 	private static final int START_BURN_EVENT = 0;
 
@@ -63,7 +63,7 @@ public class SubTileEndoflame extends SubTileGenerating {
 
 							int burnTime = stack.getItem() == Item.getItemFromBlock(ModBlocks.spreader) ? 0 : TileEntityFurnace.getItemBurnTime(stack);
 							if(burnTime > 0 && stack.getCount() > 0) {
-								this.burnTime = Math.min(FUEL_CAP, burnTime) / 2;
+								this.burnTime = (int) (Math.min(ConfigHandler.genFlowers.endoflameBurnTime, burnTime) * ConfigHandler.genFlowers.endoflameBurnTimeMult);
 
 								stack.shrink(1);
 								supertile.getWorld().playSound(null, supertile.getPos(), ModSounds.endoflame, SoundCategory.BLOCKS, 0.2F, 1F);
@@ -100,7 +100,7 @@ public class SubTileEndoflame extends SubTileGenerating {
 
 	@Override
 	public int getValueForPassiveGeneration() {
-		return 3;
+		return ConfigHandler.genFlowers.endoflameMana;
 	}
 
 	@Override

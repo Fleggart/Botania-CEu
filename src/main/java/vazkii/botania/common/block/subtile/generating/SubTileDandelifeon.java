@@ -20,18 +20,13 @@ import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.SubTileGenerating;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.tile.TileCell;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.lexicon.LexiconData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SubTileDandelifeon extends SubTileGenerating {
-
-	private static final int RANGE = 12;
-	private static final int SPEED = 10;
-//	private static final int MAX_GENERATIONS = 100;
-	private static final int MAX_MANA_GENERATIONS = 100;
-	private static final int MANA_PER_GEN = 60;
 
 	private static final int[][] ADJACENT_BLOCKS = new int[][] {
 		{ -1, -1 },
@@ -48,14 +43,13 @@ public class SubTileDandelifeon extends SubTileGenerating {
 	public void onUpdate() {
 		super.onUpdate();
 
-		if(!supertile.getWorld().isRemote && redstoneSignal > 0 && ticksExisted % SPEED == 0)
+		if(!supertile.getWorld().isRemote && redstoneSignal > 0 && ticksExisted % ConfigHandler.genFlowers.dandelifeonSpeed == 0)
 			runSimulation();
 	}
 
 	void runSimulation() {
 		int[][] table = getCellTable();
 		List<int[]> changes = new ArrayList<>();
-		new ArrayList();
 		boolean wipe = false;
 
 		for(int i = 0; i < table.length; i++)
@@ -73,8 +67,8 @@ public class SubTileDandelifeon extends SubTileGenerating {
 						newVal = gen + 1;
 				}
 
-				int xdist = Math.abs(i - RANGE);
-				int zdist = Math.abs(j - RANGE);
+				int xdist = Math.abs(i - ConfigHandler.genFlowers.dandelifeonRange);
+				int zdist = Math.abs(j - ConfigHandler.genFlowers.dandelifeonRange);
 				int allowDist = 1;
 				if(xdist <= allowDist && zdist <= allowDist && newVal > -1) {
 					gen = newVal;
@@ -91,7 +85,7 @@ public class SubTileDandelifeon extends SubTileGenerating {
 		BlockPos pos = supertile.getPos();
 
 		for(int[] change : changes) {
-			BlockPos pos_ = pos.add(-RANGE + change[0], 0, -RANGE + change[1]);
+			BlockPos pos_ = pos.add(-ConfigHandler.genFlowers.dandelifeonRange + change[0], 0, -ConfigHandler.genFlowers.dandelifeonRange + change[1]);
 			int val = change[2];
 			if(val != -2 && wipe)
 				val = -1;
@@ -103,14 +97,14 @@ public class SubTileDandelifeon extends SubTileGenerating {
 	}
 
 	int[][] getCellTable() {
-		int diam = RANGE * 2 + 1;
+		int diam = ConfigHandler.genFlowers.dandelifeonRange * 2 + 1;
 		int[][] table = new int[diam][diam];
 
 		BlockPos pos = supertile.getPos();
 
 		for(int i = 0; i < diam; i++)
 			for(int j = 0; j < diam; j++) {
-				BlockPos pos_ = pos.add(-RANGE + i, 0, -RANGE + j);
+				BlockPos pos_ = pos.add(-ConfigHandler.genFlowers.dandelifeonRange + i, 0, -ConfigHandler.genFlowers.dandelifeonRange + j);
 				table[i][j] = getCellGeneration(pos_);
 			}
 
@@ -165,7 +159,7 @@ public class SubTileDandelifeon extends SubTileGenerating {
 		Block blockAt = stateAt.getBlock();
 		TileEntity tile = world.getTileEntity(pos);
 		if(gen == -2) {
-			int val = Math.min(MAX_MANA_GENERATIONS, prevGen) * MANA_PER_GEN;
+			int val = Math.min(ConfigHandler.genFlowers.dandelifeonLifetime, prevGen) * ConfigHandler.genFlowers.dandelifeonMana;
 			mana = Math.min(getMaxMana(), mana + val);
 			//world.setBlockToAir(x, y, z);
 		} else if(blockAt == ModBlocks.cellBlock) {
@@ -186,7 +180,7 @@ public class SubTileDandelifeon extends SubTileGenerating {
 
 	@Override
 	public RadiusDescriptor getRadius() {
-		return new RadiusDescriptor.Square(toBlockPos(), RANGE);
+		return new RadiusDescriptor.Square(toBlockPos(), ConfigHandler.genFlowers.dandelifeonRange);
 	}
 
 	@Override

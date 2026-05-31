@@ -56,9 +56,9 @@ public class SubTileMunchdew extends SubTileGenerating {
 			return;
 		}
 
-		int manaPerLeaf = 160;
+		int manaPerLeaf = ConfigHandler.genFlowers.munchdewMana;
 		eatLeaves : {
-			if(getMaxMana() - mana >= manaPerLeaf && ticksExisted % 4 == 0) {
+			if(getMaxMana() - mana >= manaPerLeaf && ticksExisted % ConfigHandler.genFlowers.munchdewDelay == 0) {
 				List<BlockPos> coords = new ArrayList<>();
 				BlockPos pos = supertile.getPos();
 

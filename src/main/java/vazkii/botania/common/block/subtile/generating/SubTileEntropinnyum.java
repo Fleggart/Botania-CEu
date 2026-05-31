@@ -20,9 +20,8 @@ import vazkii.botania.api.lexicon.LexiconEntry;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.SubTileGenerating;
 import vazkii.botania.common.Botania;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.lexicon.LexiconData;
-import vazkii.botania.common.network.PacketBotaniaEffect;
-import vazkii.botania.common.network.PacketHandler;
 
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class SubTileEntropinnyum extends SubTileGenerating {
 
 	@Override
 	public int getMaxMana() {
-		return 6500;
+		return ConfigHandler.genFlowers.entropinnyumMana;
 	}
 
 	@Override

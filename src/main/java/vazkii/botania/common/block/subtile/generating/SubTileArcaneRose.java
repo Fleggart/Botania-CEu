@@ -16,6 +16,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import vazkii.botania.api.lexicon.LexiconEntry;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.SubTileGenerating;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.helper.ExperienceHelper;
 import vazkii.botania.common.lexicon.LexiconData;
 
@@ -24,10 +25,16 @@ import java.util.List;
 public class SubTileArcaneRose extends SubTileGenerating {
 
 	private static final int RANGE = 1;
+	private int delay = 5;
 
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
+
+		if(delay > 0) {
+			delay--;
+			return;
+		}
 
 		if(mana >= getMaxMana())
 			return;
@@ -36,13 +43,13 @@ public class SubTileArcaneRose extends SubTileGenerating {
 		for(EntityPlayer player : players)
 			if(ExperienceHelper.getPlayerXP(player) >= 1 && player.onGround) {
 				ExperienceHelper.drainPlayerXP(player, 1);
-				mana += 50;
+				mana += ConfigHandler.genFlowers.manaFromPlayerDrain;
 				return;
 			}
 
 		List<EntityXPOrb> orbs = supertile.getWorld().getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(supertile.getPos().add(-RANGE, -RANGE, -RANGE), supertile.getPos().add(RANGE + 1, RANGE + 1, RANGE + 1)));
 		for(EntityXPOrb orb : orbs) {
-			mana += orb.getXpValue() * 35;
+			mana += orb.getXpValue() * ConfigHandler.genFlowers.manaFromXpOrb;
 			orb.setDead();
 			return;
 		}

@@ -17,6 +17,7 @@ import net.minecraft.world.WorldServer;
 import vazkii.botania.api.lexicon.LexiconEntry;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.SubTileGenerating;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.lexicon.LexiconData;
 
 public class SubTileShulkMeNot extends SubTileGenerating {
@@ -76,7 +77,7 @@ public class SubTileShulkMeNot extends SubTileGenerating {
 	
 	@Override
 	public int getMaxMana() {
-		return 75000;
+		return ConfigHandler.genFlowers.shulkMana;
 	}
 	
 	@Override

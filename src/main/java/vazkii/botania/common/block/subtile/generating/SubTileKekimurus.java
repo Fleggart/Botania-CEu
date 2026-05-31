@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import vazkii.botania.api.lexicon.LexiconEntry;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.SubTileGenerating;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.lexicon.LexiconData;
 
 public class SubTileKekimurus extends SubTileGenerating {
@@ -32,9 +33,9 @@ public class SubTileKekimurus extends SubTileGenerating {
 		if (supertile.getWorld().isRemote)
 			return;
 
-		int mana = 1800;
+		int mana = ConfigHandler.genFlowers.kekimurusMana;
 
-		if(getMaxMana() - this.mana >= mana && !supertile.getWorld().isRemote && ticksExisted % 80 == 0) {
+		if(getMaxMana() - this.mana >= mana && !supertile.getWorld().isRemote && ticksExisted % ConfigHandler.genFlowers.kekimurusDelay == 0) {
 			for(int i = 0; i < RANGE * 2 + 1; i++)
 				for(int j = 0; j < RANGE * 2 + 1; j++)
 					for(int k = 0; k < RANGE * 2 + 1; k++) {

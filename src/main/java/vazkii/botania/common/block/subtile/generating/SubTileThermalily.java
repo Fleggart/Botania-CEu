@@ -14,6 +14,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.util.SoundCategory;
 import vazkii.botania.api.lexicon.LexiconEntry;
 import vazkii.botania.common.Botania;
+import vazkii.botania.common.core.handler.ConfigHandler;
 import vazkii.botania.common.core.handler.ModSounds;
 import vazkii.botania.common.lexicon.LexiconData;
 
@@ -51,12 +52,12 @@ public class SubTileThermalily extends SubTileHydroangeas {
 
 	@Override
 	public int getBurnTime() {
-		return 900;
+		return ConfigHandler.genFlowers.thermalilyBurnTime;
 	}
 
 	@Override
 	public int getValueForPassiveGeneration() {
-		return 20;
+		return ConfigHandler.genFlowers.thermalilyMana;
 	}
 
 	@Override
@@ -66,7 +67,7 @@ public class SubTileThermalily extends SubTileHydroangeas {
 
 	@Override
 	public int getCooldown() {
-		return 6000;
+		return ConfigHandler.genFlowers.thermalilyDelay;
 	}
 
 	@Override
