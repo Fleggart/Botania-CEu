@@ -1,5 +1,16 @@
 # Changelog
 
+## [r1.10-373] - 2026-05-31
+
+### Configuration
+
+- Migrated to a modern annotation-driven Config manager
+- Added config fields for every generating flower
+
+### Fixes
+
+- Fixed a bug where Water Runes would be unexpectedly deleted from Runic Altar crafts
+
 ## [r1.10-372] - 2026-04-14
 
 ### Build
