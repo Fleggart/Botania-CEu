@@ -386,6 +386,16 @@ public final class ConfigHandler {
 	@Config.Ignore
 	private static File configFolder;
 
+	// restore vars that addons could have referenced
+	@Config.Ignore
+	public static boolean useAdaptativeConfig = false;
+	@Config.Ignore
+	public static boolean altFlowerTextures = false;
+	@Config.Ignore
+	public static boolean enableFancySkyboxInNormalWorlds = false;
+	@Config.Ignore
+	public static boolean useVanillaParticleLimiter = true;
+
 	@Config.LangKey("botania.config.generatingFlowers")
 	@Config.Comment("Configure generation values for all the flowers. Note! You should not edit this unless you are very experienced with Botania, since it can change the brittle balance of the mod.")
 	public static GeneratingFlowers genFlowers = new GeneratingFlowers();

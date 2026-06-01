@@ -104,6 +104,8 @@ public class Botania {
 	public static boolean bloodMagicLoaded = false;
 	public static boolean coloredLightsLoaded = false;
 	public static boolean etFuturumLoaded = false;
+	// Since r373 GoG is not recognized as an addon anymore
+	public static boolean gardenOfGlassLoaded = false;
 
 	@Instance(LibMisc.MOD_ID)
 	public static Botania instance;
