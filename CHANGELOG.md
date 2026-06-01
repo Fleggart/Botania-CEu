@@ -1,5 +1,11 @@
 # Changelog
 
+## [r1.10-373a] - 2026-06-01
+
+### Fixes
+
+- Hotfixed compatibility with Botania Tweaks
+
 ## [r1.10-373] - 2026-05-31
 
 ### Configuration
